@@ -26,7 +26,7 @@ export const LoginController = asyncHandler(
     res.cookie("access_token", token, {
       httpOnly: process.env.NODE_ENV === "production",
     });
-    res.json({ token });
+    res.json({ status: true, data: token });
   },
 );
 
@@ -35,8 +35,15 @@ export const PasswordResetController = asyncHandler(
     //new_password && old_password
     const credientials = req.body as {
       old_password?: string; //Dashboard settings
-      reset_token?: string; // Forgotten password
       new_password: string;
+    };
+
+    const userId = req.userId || null;
+
+    const { email, reset_token, source } = req.query as {
+      reset_token: string | null;
+      email: string;
+      source: any;
     };
 
     //Validate field;
@@ -49,9 +56,12 @@ export const PasswordResetController = asyncHandler(
     }
 
     const reset_response = await PasswordResetService({
-      userId: "adasd",
-      old_password: "dasd",
-      new_password: "",
+      email,
+      reset_token,
+      source,
+      userId,
+      old_password: credientials.old_password,
+      new_password: credientials.new_password,
     });
 
     res.json({ status: true, data: reset_response });
@@ -98,19 +108,6 @@ export const SignupController = asyncHandler(
     res.cookie("access_token", token, {
       httpOnly: process.env.NODE_ENV === "production",
     });
-    res.json({ token });
+    res.json({ status: true, data: token });
   },
 );
-
-//Delete session on the db
-/*export const LogoutController = asyncHandler(
-  async (req: Request, res: Response) => {
-    const message = await  
-    res.json({
-      OMO: { email, password },
-    });
-  },
-);*/
-
-//Collect extra information from client
-//export const onBoardingController = asyncHandler(async(req: Request, res: Response) => {})

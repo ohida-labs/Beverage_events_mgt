@@ -1,0 +1,13 @@
+{
+  // "extends": "@tsconfig/node-22/tsconfig.json",
+  "compilerOptions": {
+    // "typeRoots": ["src/utils/types"],
+    "esModuleInterop": true,
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "include": ["src/**/*"]
+}
