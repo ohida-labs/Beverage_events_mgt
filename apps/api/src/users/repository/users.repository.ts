@@ -2,7 +2,11 @@ import { DbUpdateHelper } from "@/utils/database/updateHelper";
 import pool from "../../utils/database";
 import { handlePgError } from "../../utils/exceptions/dbError";
 import ValidationError from "../../utils/exceptions/validationError";
-import { IUpdateUser, IUser } from "../../utils/types/interfaces/user";
+import {
+  IFilterUser,
+  IUpdateUser,
+  IUser,
+} from "../../utils/types/interfaces/user";
 
 interface UpdateUserWithPassword extends IUpdateUser {
   password?: string;
@@ -141,5 +145,23 @@ export const DeleteUserFromDb = async (identifier: string) => {
 };
 
 //Admins: Gets all user;
+export const GetAllUsersDb = async (filter: IFilterUser) => {
+  try {
+    const query = `
+         select * from users 
+         limit 100
+         `;
 
+    const res = await pool.query(query);
+
+    if (res.rows.length === 0) {
+      return [];
+    }
+
+    const user: IUser[] = res.rows;
+    return user;
+  } catch (e) {
+    handlePgError(e);
+  }
+};
 //Admin: batch change user: 'priority, roles'

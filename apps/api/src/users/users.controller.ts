@@ -1,7 +1,13 @@
 import { Response, Request } from "express";
 import { asyncHandler } from "../utils/middleware/error";
-import { GetUserDetails, UpdateUserDetails } from "./users.service";
-import { IUpdateUser } from "@/utils/types/interfaces/user";
+import {
+  CreateNewAdminUser,
+  DeleteUserDetails,
+  GetAllUsers,
+  GetUserDetails,
+  UpdateUserDetails,
+} from "./users.service";
+import { IFilterUser, IUpdateUser } from "@/utils/types/interfaces/user";
 import ValidationError from "@/utils/exceptions/validationError";
 import { UpdateUser } from "./repository/users.repository";
 
@@ -30,7 +36,7 @@ export const getUserController = asyncHandler(
             phone_number: user.phone_number,
             last_number: user.last_name,
             role: user.role,
-            created: userData.created_at,
+            created: user.created_at,
             priority: user.priority,
           },
         },
@@ -93,34 +99,44 @@ export const DeleteAccountController = asyncHandler(
   async (req: Request, res: Response) => {
     const userId = req.userId;
 
-    const response = await Dele(userId);
+    const response = await DeleteUserDetails(userId);
 
     res.json({ status: true, data: response });
   },
 );
 
-//Register new user
-export const SignupController = asyncHandler(
+//Admin controls
+export const GetUsersController = asyncHandler(
   async (req: Request, res: Response) => {
-    //name, email, password;
-    const { email, password, first_name, last_name } = req.body;
+    const userId = req.userId;
+    const { page, limit, search, sortBy, sortOrder, role } = req.query;
+    const filter = {
+      page: +page,
+      limit: +limit,
+      search,
+      sortBy,
+      sortOrder,
+      role,
+    } as IFilterUser;
 
-    //Validate field;
-    if (!email || !password || !first_name || !last_name) {
-      throw new Error("Invalid credentials");
+    //Validate filter: TODO
+
+    const response = await GetAllUsers(userId, filter);
+    res.json({ status: true, data: response });
+  },
+);
+
+export const CreateUserController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const userId = req.userId;
+    const credentials = req.body as {
+      email: string;
+      password: string;
+    };
+    if (!credentials || !credentials.email || !credentials.password) {
+      throw new ValidationError({}, "Invalid Credentials!");
     }
-
-    //Token
-    const token = await SignupWithEmailAndPassword({
-      email,
-      password,
-      first_name,
-      last_name,
-    });
-
-    res.cookie("access_token", token, {
-      httpOnly: process.env.NODE_ENV === "production",
-    });
-    res.json({ status: true, data: token });
+    const response = await CreateNewAdminUser(userId, credentials);
+    res.json({ status: true, data: response });
   },
 );
