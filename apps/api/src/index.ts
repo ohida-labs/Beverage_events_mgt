@@ -70,6 +70,9 @@ app.use(express.json());
 //Auth
 app.use("/v0.1/auth", AuthRouter);
 
+//User
+app.use("/v0.1/user", AuthRouter);
+
 app.get("/", (req, res) => {
   res.send("Welcome to BEMGS API!");
 });
