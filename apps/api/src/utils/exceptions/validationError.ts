@@ -8,7 +8,7 @@ class ValidationError extends BaseError {
     errors: Record<string, string>,
     description = "Validation failed",
   ) {
-    super("VALIDATION_ERROR", httpStatusCodes.BAD_REQUEST, true, description);
+    super(httpStatusCodes.BAD_REQUEST, true, description);
     this.errors = errors;
   }
 }

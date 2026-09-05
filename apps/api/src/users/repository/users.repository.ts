@@ -2,8 +2,12 @@ import { DbUpdateHelper } from "@/utils/database/updateHelper";
 import pool from "../../utils/database";
 import { handlePgError } from "../../utils/exceptions/dbError";
 import ValidationError from "../../utils/exceptions/validationError";
-import { IUser } from "../../utils/types/interfaces/user";
+import { IUpdateUser, IUser } from "../../utils/types/interfaces/user";
 
+interface UpdateUserWithPassword extends IUpdateUser {
+  password?: string;
+  user_id?: string | null;
+}
 export const GetUser = async (id: string, search_by?: string) => {
   try {
     const query_id = `
@@ -70,22 +74,7 @@ export const CreateUser = async (user_arg: {
 
 //Change user_id to null if user deletes their account
 //Admin: change user: 'blacklisted, role, priority, reason'
-export const UpdateUser = async (
-  id: string,
-  data: {
-    email?: string;
-    password?: string;
-    role?: string;
-    priority?: number;
-    profile?: string;
-    phone_number?: string;
-    first_name?: string;
-    last_name?: string;
-    avatar?: string;
-    blacklisted?: boolean;
-    blacklisted_reason?: string;
-  },
-) => {
+export const UpdateUser = async (id: string, data: UpdateUserWithPassword) => {
   const { setClause, values } = DbUpdateHelper({ updates: data });
 
   try {

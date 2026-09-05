@@ -3,10 +3,10 @@ import {
   GetUser,
   UpdateUser,
 } from "@/users/repository/users.repository";
-import ValidationError from "@/utils/exceptions/validationError";
 import bc from "bcrypt";
 import jwt from "jsonwebtoken";
 import { getResetToken, upsertToken } from "./repository/resetToken";
+import AuthError from "@/utils/exceptions/AuthError";
 //LOGIN WITH PASSWORD
 interface IAuth {
   email: string;
@@ -38,7 +38,7 @@ export const LoginWithEmailAndPassword = async (arg: IAuth) => {
 
     //Check if email and password match with the one on db;
     if (!user.email || !bc.compare(arg.password, user.password)) {
-      throw new ValidationError({}, "Invalid Email or Password");
+      throw new AuthError("Invalid Email or Password");
     }
 
     //create a new token: 1d
@@ -62,7 +62,7 @@ export const SignupWithEmailAndPassword = async (arg: ISignup) => {
 
   //if email don't exist then create user;
   if (user.email) {
-    throw new ValidationError({}, "Email already exist!");
+    throw new AuthError("Email already exist!");
   }
 
   //create user with email and name, encypted password in db
@@ -88,12 +88,12 @@ export const PasswordResetService = async (arg: IResetPassword) => {
 
   //1.Email is valid!
   if (arg.source === "forgot_password" && !user && !user?.email) {
-    throw new ValidationError({}, "This email is not valid");
+    throw new AuthError("This email is not valid");
   }
 
   //2.compare old passwords (in db and from user)
   if (arg.source === "change_password" && user.password !== arg.old_password) {
-    throw new ValidationError({}, "Your current password is not correct");
+    throw new AuthError("Your current password is not correct");
   }
 
   if (arg.source === "forgot_password") {
@@ -101,17 +101,17 @@ export const PasswordResetService = async (arg: IResetPassword) => {
     const resetToken = await getResetToken(arg.email);
 
     if (resetToken.isUsed) {
-      throw new ValidationError({}, "Token has already been used!");
+      throw new AuthError("Token has already been used!");
     }
 
     //15mins
     if (!resetToken.expires_at || resetToken.expires_at > new Date()) {
-      throw new ValidationError({}, "Token has expired!");
+      throw new AuthError("Token has expired!");
     }
 
     //Validate validity
     if (!resetToken.token || resetToken.token !== arg.reset_token) {
-      throw new ValidationError({}, "Token is invalid!");
+      throw new AuthError("Token is invalid!");
     }
 
     //Change it to used
@@ -141,7 +141,7 @@ export const ForgotPasswordService = async (arg: IForgotPassword) => {
   const user = await GetUser(arg.email, "email");
 
   if (!user) {
-    throw new ValidationError({}, `${arg.email[0].toUpperCase()} is not found`);
+    throw new AuthError(`${arg.email[0].toUpperCase()} is not found`);
   }
 
   const generateToken = "sometoken";

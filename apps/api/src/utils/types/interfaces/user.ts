@@ -14,3 +14,15 @@ export interface IUser {
   updated_at: Date;
   created_at: Date;
 }
+
+export interface IUpdateUser {
+  role?: string;
+  priority?: number;
+  profile?: string;
+  phone_number?: string;
+  first_name?: string;
+  last_name?: string;
+  avatar?: string;
+  blacklisted?: boolean;
+  blacklisted_reason?: string;
+}

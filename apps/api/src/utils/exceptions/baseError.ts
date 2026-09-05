@@ -1,13 +1,10 @@
 class BaseError extends Error {
   isOperational: boolean;
   statusCode: number;
-  name: string;
-  //description: string;
 
   constructor(
-    name: string,
     statusCode: number,
-    isOperational: boolean,
+    isOperational: boolean = true,
     description: string,
   ) {
     //From THE parent class!
@@ -15,10 +12,10 @@ class BaseError extends Error {
     Object.setPrototypeOf(this, new.target.prototype);
 
     //Adding this to the Error Class
-    this.name = name;
+    this.name = new.target.name;
     this.statusCode = statusCode;
     this.isOperational = isOperational;
-    Error.captureStackTrace(this);
+    Error.captureStackTrace(this, new.target);
   }
 }
 export default BaseError;
