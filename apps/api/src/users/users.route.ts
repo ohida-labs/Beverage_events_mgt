@@ -1,6 +1,7 @@
 //All user Actions and Data: role and priority;
 import { Router } from "express";
 import {
+  CreateUserController,
   DeleteAccountController,
   getUserController,
   UpdateUserController,
@@ -10,8 +11,11 @@ const UserRouter = Router();
 
 //General actions
 UserRouter.route("/")
-  .post(getUserController)
+  .post(CreateUserController)
+  .get(getUserController)
   .patch(UpdateUserController)
   .delete(DeleteAccountController);
+
+UserRouter.route("/all").get(getUserController);
 
 export default UserRouter;

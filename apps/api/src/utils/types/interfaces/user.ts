@@ -31,7 +31,7 @@ export interface IFilterUser {
   page?: number;
   limit?: number;
   search?: string;
-  sortBy?: "first_name" | "last_name" | "email" | null;
+  sortBy?: "first_name" | "last_name" | "email" | "created_at" | null;
   sortOrder?: "asc" | "desc" | null;
   role?: "default" | "super_admin" | "admin" | null;
 }
