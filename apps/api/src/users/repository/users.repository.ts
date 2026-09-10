@@ -12,6 +12,7 @@ interface UpdateUserWithPassword extends IUpdateUser {
   password?: string;
   user_id?: string | null;
 }
+
 export const GetUser = async (id: string, search_by?: string) => {
   try {
     const query_id = `
@@ -37,6 +38,7 @@ export const GetUser = async (id: string, search_by?: string) => {
     const user: IUser = res.rows[0];
     return user;
   } catch (e) {
+    console.log("from login", e);
     if (e instanceof ValidationError) {
       throw e;
     }
@@ -50,11 +52,13 @@ export const CreateUser = async (user_arg: {
   email: string;
   password: string;
 }) => {
+  console.log(user_arg, "dbbbbb");
   try {
     const query = {
       text: `
          insert into users (email, password, first_name, last_name)
          values ($1, $2, $3, $4)
+         returning user_id;
         `,
       values: [
         user_arg.email,
@@ -65,12 +69,11 @@ export const CreateUser = async (user_arg: {
     };
 
     const res = await pool.query(query);
-
-    const user = res.rows[0].user_id as {
+    const user = res.rows[0] as {
       user_id: string;
     };
 
-    return { user };
+    return user;
   } catch (e) {
     handlePgError(e);
   }

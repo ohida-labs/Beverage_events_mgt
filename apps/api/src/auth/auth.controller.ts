@@ -26,6 +26,7 @@ export const LoginController = asyncHandler(
     res.cookie("access_token", token, {
       httpOnly: process.env.NODE_ENV === "production",
     });
+
     res.json({ status: true, data: token });
   },
 );
@@ -93,7 +94,7 @@ export const SignupController = asyncHandler(
     const { email, password, first_name, last_name } = req.body;
 
     //Validate field;
-    if (!email || !password || !first_name || !last_name) {
+    if (!email || !password || !first_name) {
       throw new Error("Invalid credentials");
     }
 

@@ -36,6 +36,10 @@ export const LoginWithEmailAndPassword = async (arg: IAuth) => {
     //check up email on db
     const user = await GetUser(arg.email, "email");
 
+    if (!user) {
+      throw new AuthError("Invalid Email or Password");
+    }
+
     //Check if email and password match with the one on db;
     if (!user.email || !bc.compare(arg.password, user.password)) {
       throw new AuthError("Invalid Email or Password");
@@ -61,7 +65,7 @@ export const SignupWithEmailAndPassword = async (arg: ISignup) => {
   const user = await GetUser(arg.email, "email");
 
   //if email don't exist then create user;
-  if (user.email) {
+  if (user && user.email) {
     throw new AuthError("Email already exist!");
   }
 
@@ -74,12 +78,12 @@ export const SignupWithEmailAndPassword = async (arg: ISignup) => {
   });
 
   //create a new token: 1d
-  const token = jwt.sign({ user_id: user.user_id }, process.env.JWT_SECRET, {
+  const token = jwt.sign({ user_id: newuser.user_id }, process.env.JWT_SECRET, {
     expiresIn: "1d",
   });
 
   //Send back access_token
-  return { token, user: newuser.user };
+  return { token, user: newuser.user_id };
 };
 
 export const PasswordResetService = async (arg: IResetPassword) => {

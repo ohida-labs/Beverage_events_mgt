@@ -1,52 +1,11 @@
-/*import express from "express";
-import type { ApiResponse, User } from "@repo/shared";
-const app = express();
-app.get("/api/user", (_req, res) => {
-  const user: User = {
-    id: "123",
-    name: "Ohida",
-  };
-  const response: ApiResponse<User> = {
-    data: user,
-    message: "User retrieved",
-  };
-  res.json(response);
-});
-app.listen(3000, () => {
-  console.log("API running on http://localhost:3000");
-});
-*/
-
-/*
-The purpose of this project;
-  
-Personal
- - to learn and understand typescript;
- - see how database works under load;
- 
-Community 
- - To build a fun app for gamers;
- - To allow gamer earn from their skills;
-
- */
-/*
-import express from "express";
-const app = express();
-const port = "3030";
-
-//Usees Routes 
-app.route("/user", );
-
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
-*/
+//import type { ApiResponse, User } from "@repo/shared";
 
 //Extenal Package
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
+import path from "node:path";
 
 //Middlewares
 import {
@@ -57,11 +16,17 @@ import {
 
 //Routes
 import AuthRouter from "./auth/auth.route";
+import EventRoute from "./events/events.route";
+import UserRouter from "./users/users.route";
+
+//dotenv.config({ path: ".env.local" });
+
+dotenv.config({
+  path: path.resolve("apps/api/.env.local"),
+});
 
 const app = express();
 const PORT = 8080;
-
-dotenv.config({ path: ".env.local" });
 
 app.use(cookieParser());
 app.use(cors());
@@ -71,7 +36,10 @@ app.use(express.json());
 app.use("/v0.1/auth", AuthRouter);
 
 //User
-app.use("/v0.1/user", AuthRouter);
+app.use("/v0.1/user", UserRouter);
+
+//Events
+app.use("/v0.1/user", EventRoute);
 
 app.get("/", (req, res) => {
   res.send("Welcome to BEMGS API!");

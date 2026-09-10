@@ -3,11 +3,15 @@
   "compilerOptions": {
     // "typeRoots": ["src/utils/types"],
     "esModuleInterop": true,
+    //"lib": ["ES2023", "DOM"],
+    //"types": ["node", "vite/client"],
+    //"target": "es2023",
     "outDir": "./dist",
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
     }
   },
+  
   "include": ["src/**/*"]
 }
