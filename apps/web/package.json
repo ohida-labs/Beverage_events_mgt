@@ -12,9 +12,11 @@
   "dependencies": {
     "@react-router/node": "^7.18.2",
     "@repo/shared": "*",
+    "@tailwindcss/vite": "^4.3.3",
+    "isbot": "^5",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "isbot": "^5"
+    "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
     "@babel/core": "^7.29.7",

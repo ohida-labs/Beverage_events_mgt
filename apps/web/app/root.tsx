@@ -7,6 +7,7 @@ import {
   ScrollRestoration,
 } from "react-router";
 import type { Route } from "./+types/root";
+import NavigationBar from "./components/Navbar";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const links: Route.LinksFunction = () => [
@@ -15,6 +16,14 @@ export const links: Route.LinksFunction = () => [
     rel: "preconnect",
     href: "https://fonts.gstatic.com",
     crossOrigin: "anonymous",
+  },
+  {
+    rel: "stylesheet",
+    href: "/app/index.css",
+  },
+  {
+    rel: "icon",
+    href: "/favicon.ico",
   },
   {
     rel: "stylesheet",
@@ -28,10 +37,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Guiness Nigeria - Home delivery is the best option!</title>
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="space-y-4">
+        <NavigationBar />
         {children}
         <ScrollRestoration />
         <Scripts />

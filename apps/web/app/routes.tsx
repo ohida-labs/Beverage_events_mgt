@@ -13,7 +13,7 @@ export default [
   layout("./pages/auth/layout.tsx", [
     route("login", "./pages/auth/login.tsx"),
     route("register", "./pages/auth/signup.tsx"),
-    route("forgot_password", "./pages/auth/forgot_password.tsx"),
+    route("forgot_pas  csword", "./pages/auth/forgot_password.tsx"),
   ]),
 
   /*

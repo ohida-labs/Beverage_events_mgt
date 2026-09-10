@@ -1,25 +1,41 @@
+@import "tailwindcss";
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  /* colors */
+  --background: hsl(0, 0%, 90%);
+  --background_light: hsl(0, 0%, 70%);
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --foreground: hsl(0, 0%, 10%);
+
+  --text: hsl(267, 8%, 42%);
+  --text-h: hsl(267, 8%, 5%);
+
+  --border: hsl(260, 6%, 90%);
+
+  --primary-bg90: hsl(39, 100%, 92%);
+  --primary-bg70: hsl(40, 96%, 85%);
+  --primary: hsl(40, 93%, 15%);
+
+  --secondary-bg90: hsl(6, 100%, 99%);
+  --secondary-bg70: hsl(6, 100%, 85%);
+  --secondary: hsl(6, 100%, 70%);
+
+  --shadow-bg:
+    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  --danger-red: hsl(6, 100%, 30%);
+  --input: hsl(180, 1%, 86%);
+  --muted: hsl(140, 0%, 50%);
+
+  /* font family */
+  --sans: system-ui, "Segoe UI", Roboto, sans-serif;
+  --heading: system-ui, "Segoe UI", Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
+  /* Default Spacing, Fonts and  COlor */
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
   color-scheme: light dark;
   color: var(--text);
-  background: var(--bg);
+  background: var(--background);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -32,80 +48,110 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --text: #9ca3af;
+    --text: hsl(218, 11%, 65%);
     --text-h: #f3f4f6;
-    --bg: #16171d;
+
+    --background: hsl(80, 12%, 5%);
+    --background_light: hsl(80, 12%, 10%);
+
+    --input: hsl(80, 12%, 20%);
+    --foreground: #fff;
     --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
+    --shadow-bg:
       rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
   }
+}
 
-  #social .button-icon {
-    filter: invert(1) brightness(2);
+@theme inline {
+  /*colors*/
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  /* Gold Color */
+  --color-primary: var(--primary);
+  --color-primary70: var(--primary70);
+  --color-primary90: var(--primary90);
+
+  /* Red Color */
+  --color-secondary: var(--secondary);
+  --color-secondary70: var(--secondary70);
+  --color-secondary90: var(--secondary90);
+
+  /*Muted Color*/
+  --color-muted: var(--muted);
+
+  /*BORDERS*/
+  --color-border: var(--border);
+
+  /* Input */
+  --color-input: var(--input);
+
+  /* Text header */
+  --color-h: var(--text-h);
+
+  /*Error Display COLOR*/
+  --color-danger: var(--danger-red);
+
+  /* SHADOW */
+  --shadow-*: initial;
+  --shadow-default: var(--shadow-bg) /* Fonts */;
+
+  /*Default animation*/
+  --animate-fade-in-scale: fade-in-scale 0.3s ease-out;
+
+  @keyframes fade-in-scale {
+    0% {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
 }
 
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-}
-
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
-}
-
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
+/*Base selector only!*/
+@layer base {
+  body {
+    margin: 0;
+  }
+  button {
+    width: fit-content;
+    padding: 0.5rem 1.8rem;
+    display: block;
+  }
+  input {
+    width: 100%;
+    background-color: var(--input);
+    display: block;
+    font-weight: 500;
+    color: var(--muted);
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    outline: none;
+    font-size: 1.2rem;
+    width: 100%;
+    /*
+  background-color: var(--input);
+  max-width: 30vw;
+  */
   }
 }
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
+
+/*Component styling selector only!*/
+@layer components {
+  /*Submission button*/
+  .submit_button {
+    color: var(--foreground);
+    background-color: var(--primary);
   }
-}
-p {
-  margin: 0;
-}
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
-
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+  /*Color and spaing*/
+  .card {
+    background-color: var(--background_light);
+    width: 90%;
+    padding: 1.6rem 1.8rem;
+  }
+  /*Make it responsive!*/
 }
