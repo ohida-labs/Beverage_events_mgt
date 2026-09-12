@@ -41,7 +41,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="space-y-4">
+      <body className="space-y-8">
         <NavigationBar />
         {children}
         <ScrollRestoration />
