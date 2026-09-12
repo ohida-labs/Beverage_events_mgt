@@ -2,6 +2,7 @@ import {
   type RouteConfig,
   index,
   layout,
+  prefix,
   // prefix,
   route,
 } from "@react-router/dev/routes";
@@ -15,6 +16,37 @@ export default [
     route("register", "./pages/auth/signup.tsx"),
     route("forgot_pas  csword", "./pages/auth/forgot_password.tsx"),
   ]),
+
+  //Dashboard
+  ...prefix("dashboard", [
+    layout("./pages/dashboard/dashboard_layout.tsx", [
+      index("./pages/dashboard/home.tsx"),
+
+      //ORDERS
+      route("orders", "./pages/dashboard/orders/order_root.tsx", [
+        index("./pages/dashboard/orders/orders_list.tsx"),
+        route("new", "./pages/dashboard/orders/single_order/create_order.tsx"),
+        route(
+          ":order_id",
+          "./pages/dashboard/orders/single_order/view_order.tsx",
+        ),
+        route(
+          ":order_id/edit",
+          "./pages/dashboard/orders/single_order/edit_order.tsx",
+        ),
+      ]),
+
+      //Setting
+      //  route("settings", ""),
+    ]),
+  ]),
+
+  /*
+
+  
+*/
+
+  //]),
 
   /*
   ...prefix("admin", [
@@ -40,23 +72,5 @@ export default [
       //Roles and permission
       route("manage_users", ""),
     ]),
-
-    ...prefix("dashboard", [
-      layout("./pages/dashboard/dashboard_layout.tsx", [
-        //home
-        index("./pages/dashboard/home.tsx"),
-
-        //ORDERS
-        route("orders", "", [
-          route("create", ""),
-          route(":order_id", ""),
-          route(":order_id/edit", ""),
-        ]),
-
-        //Setting
-        route("settings", ""),
-      ]),
-    ]),
-  ]),
-  */
+    */
 ] satisfies RouteConfig;
