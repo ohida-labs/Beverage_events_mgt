@@ -30,7 +30,9 @@ interface IFilterEvents {
   page?: number;
   limit?: number;
   search?: string;
+
   sortBy?: "expected_guests" | "state" | "event_date" | "created_at" | null;
   sortOrder?: "asc" | "desc" | null;
   user?: string;
+  status?: "drafts" | "pending" | "processing" | "cancelled" | "completed";
 }

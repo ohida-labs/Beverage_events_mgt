@@ -58,7 +58,7 @@ export const CreateUser = async (user_arg: {
       text: `
          insert into users (email, password, first_name, last_name)
          values ($1, $2, $3, $4)
-         returning user_id;
+         returning user_id, role, priority;
         `,
       values: [
         user_arg.email,
@@ -71,6 +71,8 @@ export const CreateUser = async (user_arg: {
     const res = await pool.query(query);
     const user = res.rows[0] as {
       user_id: string;
+      role: string;
+      priority: string;
     };
 
     return user;

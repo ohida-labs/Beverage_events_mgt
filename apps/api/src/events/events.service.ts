@@ -108,6 +108,13 @@ export const GetAllEventsService = async (arg: {
   return { events };
 };
 
+
+//Add Drinks;
+//Remove Drinks;
+//Update Drinks
+//Load Drinks;
+
+
 //Later
 
 //  export const DeleteEventService = async () => {};

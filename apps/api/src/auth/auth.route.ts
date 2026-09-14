@@ -4,6 +4,7 @@ import {
   LoginController,
   PasswordResetController,
   SignupController,
+  UserIsAuthorizedCheck,
 } from "./auth.controller";
 
 const AuthRouter = Router();
@@ -16,4 +17,6 @@ AuthRouter.route("/login").post(LoginController);
 AuthRouter.route("/password_reset").post(PasswordResetController);
 
 AuthRouter.route("/forgot_password").post(ForgotPasswordController);
+
+AuthRouter.route("/authorized").get(UserIsAuthorizedCheck);
 export default AuthRouter;

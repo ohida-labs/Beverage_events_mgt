@@ -46,9 +46,17 @@ export const LoginWithEmailAndPassword = async (arg: IAuth) => {
     }
 
     //create a new token: 1d
-    const token = jwt.sign({ user_id: user.user_id }, process.env.JWT_SECRET, {
-      expiresIn: "1d",
-    });
+    const token = jwt.sign(
+      {
+        user_id: user.user_id,
+        role: user.role,
+        priority: user.priority,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1d",
+      },
+    );
 
     //Send back access_token
     return {
@@ -78,9 +86,17 @@ export const SignupWithEmailAndPassword = async (arg: ISignup) => {
   });
 
   //create a new token: 1d
-  const token = jwt.sign({ user_id: newuser.user_id }, process.env.JWT_SECRET, {
-    expiresIn: "1d",
-  });
+  const token = jwt.sign(
+    {
+      user_id: newuser.user_id,
+      role: newuser.role,
+      priority: newuser.priority,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "1d",
+    },
+  );
 
   //Send back access_token
   return { token, user: newuser.user_id };
@@ -162,3 +178,5 @@ export const ForgotPasswordService = async (arg: IForgotPassword) => {
   //const sendEmail =
   return { data: "Password reset link has been sent to your registered email" };
 };
+
+//check is auth;

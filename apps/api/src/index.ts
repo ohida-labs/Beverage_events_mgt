@@ -18,6 +18,7 @@ import {
 import AuthRouter from "./auth/auth.route";
 import EventRoute from "./events/events.route";
 import UserRouter from "./users/users.route";
+import { AuthorizationClientRequest } from "./utils/middleware/auth";
 
 //dotenv.config({ path: ".env.local" });
 
@@ -36,10 +37,10 @@ app.use(express.json());
 app.use("/v0.1/auth", AuthRouter);
 
 //User
-app.use("/v0.1/user", UserRouter);
+app.use("/v0.1/user", AuthorizationClientRequest, UserRouter);
 
 //Events
-app.use("/v0.1/user", EventRoute);
+app.use("/v0.1/events", AuthorizationClientRequest, EventRoute);
 
 app.get("/", (req, res) => {
   res.send("Welcome to BEMGS API!");

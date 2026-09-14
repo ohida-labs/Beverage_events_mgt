@@ -1,4 +1,4 @@
-import { Response, Request } from "express";
+import { Response, Request, NextFunction } from "express";
 import {
   ForgotPasswordService,
   LoginWithEmailAndPassword,
@@ -6,7 +6,10 @@ import {
   SignupWithEmailAndPassword,
 } from "./auth.service";
 import { asyncHandler } from "../utils/middleware/error";
+import jwt from "jsonwebtoken";
+import AuthError from "@/utils/exceptions/AuthError";
 
+const jwtSecret = process.env.JWT_SECRET as string;
 /*Implement auth with lucia Auth! */
 export const LoginController = asyncHandler(
   async (req: Request, res: Response) => {
@@ -110,5 +113,48 @@ export const SignupController = asyncHandler(
       httpOnly: process.env.NODE_ENV === "production",
     });
     res.json({ status: true, data: token });
+  },
+);
+
+//Check if authenticated
+export const UserIsAuthorizedCheck = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    //get token from the headers
+    const authHeader = req.headers.authorization;
+    if (!authHeader) return res.status(401).end();
+
+    const token = authHeader.split(" ")[1];
+
+    try {
+      const decoded = jwt.verify(token, jwtSecret) as {
+        user_id: string;
+        role: "default" | "admin" | "super_admin";
+        priority: number;
+      };
+
+      res.json({
+        status: true,
+        data: {
+          role: decoded.role,
+          priority: decoded.priority,
+          user_id: decoded.user_id,
+        },
+      });
+    } catch (e) {
+      if (e.code === "ERR_JWT_EXPIRED") {
+        throw new AuthError("Session timed-out", 401);
+      }
+
+      if (e.message === "fetch failed") {
+        throw new AuthError("Network failed! ", 500);
+      }
+
+      if (e.code === "ERR_JWKS_TIMEOUT") {
+        throw new AuthError("Network failed! ", 500);
+      }
+      if (e.code === "ERR_JWS_INVALID") {
+        throw new AuthError("Invalid token received! ", 400);
+      }
+    }
   },
 );
