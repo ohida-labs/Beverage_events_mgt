@@ -3,16 +3,11 @@ import { data } from "react-router";
 import type { Route } from "./+types/home";
 import LastestActiveOrder from "../../components/LatestActiveOrder";
 import DraftsOrderList from "../../components/DraftOrders";
-//import { GetLatestPendingEventOrder } from "../../lib/events.server";
 import { AuthUserContext } from "../../context";
 //import { GetDraftedEventOrders } from "../../lib/events.server";
+//import { GetLatestPendingEventOrder } from "../../lib/events.server";
 
-//import { AuthUserContext } from "../../context";
 /* eslint-disable react-refresh/only-export-components */
-/*export async function loader({ context }: Route.LoaderArgs) {
-  const user = context.get(AuthUserContext);
-  return user;
-}*/
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const cookieHeader = request.headers.get("Cookie");
@@ -65,7 +60,7 @@ export default function DashboardHomeView({
   loaderData,
 }: Route.ComponentProps) {
   //const { user, active_event, draft_events }  = loaderData;
-  const { user, active_event, draft_events } = loaderData;
+  const { active_event, draft_events } = loaderData;
 
   /*
   if (user?.error) {

@@ -69,13 +69,13 @@
 
   /* Gold Color */
   --color-primary: var(--primary);
-  --color-primary70: var(--primary70);
-  --color-primary90: var(--primary90);
+  --color-primary70: var(--primary-bg70);
+  --color-primary90: var(--primary-bg70);
 
   /* Red Color */
   --color-secondary: var(--secondary);
-  --color-secondary70: var(--secondary70);
-  --color-secondary90: var(--secondary90);
+  --color-secondary70: var(--secondary-bg70);
+  --color-secondary90: var(--secondary-bg90);
 
   /*Muted Color*/
   --color-muted: var(--muted);

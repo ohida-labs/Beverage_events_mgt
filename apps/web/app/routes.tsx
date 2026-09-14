@@ -41,6 +41,12 @@ export default [
     ]),
   ]),
 
+  ...prefix("admin", [
+    layout("./pages/admin/layout.tsx", [
+      //home
+      index("./pages/admin/home.tsx"),
+    ]),
+  ]),
   /*
 
   

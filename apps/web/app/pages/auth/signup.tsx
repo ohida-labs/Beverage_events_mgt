@@ -65,7 +65,6 @@ export async function action({ request }: Route.ActionArgs) {
 
   //Success: store token cookie and redirect users
   const cookieHeader = request.headers.get("Cookie");
-
   const cookie = (await user_cookie_token.parse(cookieHeader)) || {};
   cookie.token = res?.data?.token;
 

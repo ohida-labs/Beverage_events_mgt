@@ -1,9 +1,9 @@
-import { redirect } from "react-router";
 import { AuthUserContext } from "../context";
 import { user_cookie_token } from "../cookies.server";
-import type { Route } from "../pages/dashboard/+types/dashboard_layout";
-
-export const DefaultUserMiddleware: Route.MiddlewareFunction = async function (
+import { redirect } from "react-router";
+import type { Route } from "../pages/admin/+types/layout";
+//TODO: REFACTOR THIS CODE
+export const AdminUserMiddleware: Route.MiddlewareFunction = async function (
   { request, context },
   next,
 ) {
@@ -36,8 +36,8 @@ export const DefaultUserMiddleware: Route.MiddlewareFunction = async function (
     throw redirect(`/login?reason=${res?.error?.message}`);
   }
 
-  if (res.data.role === "admin" || res.data.role === "super_admin") {
-    return redirect(`/admin`);
+  if (res.data.role === "default") {
+    return redirect(`/dashboard`);
   }
   //Save the user context
   context.set(AuthUserContext, res.data);
