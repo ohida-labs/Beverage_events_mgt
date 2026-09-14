@@ -1,2 +1,3 @@
 node_modules
 .vscode
+apps/api/.env.local
