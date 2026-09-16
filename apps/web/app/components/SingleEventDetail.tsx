@@ -1,144 +1,126 @@
-interface EventOrder {
+type Drink = {
+  drink_id: string;
+  name: string;
+  logo: string;
+  crate_size: number;
+  quantity: number;
+};
+
+type EventOrder = {
   event_id: string;
   name: string;
   total: number;
-  status: string;
+  status: "draft" | "pending" | "processing" | "cancelled" | "completed";
+  event_date?: Date;
+  expected_guests?: number;
+  drinks?: Drink[];
+};
+
+export default function EventPage({ event }: { event: EventOrder }) {
+  return (
+    <main className="mx-auto max-w-5xl space-y-6 p-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm text-gray-500">Event</p>
+          <h1 className="text-2xl font-semibold">{event.name}</h1>
+        </div>
+
+        <StatusBadge state={event.status} />
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2">
+        {/* Event Card */}
+        <section className="rounded-2xl border bg-white p-6 shadow-sm">
+          <h2 className="mb-5 text-lg font-semibold">Event details</h2>
+
+          <div className="space-y-5">
+            <div className="flex items-center gap-3">
+              {/*<CalendarDays className="h-5 w-5 text-gray-400" />*/}
+              <div>
+                <p className="text-xs text-gray-500">Event date</p>
+                <p className="font-medium">
+                  {event.event_date &&
+                    new Date(event.event_date).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              {/* <Users className="h-5 w-5 text-gray-400" /> */}
+              <div>
+                <p className="text-xs text-gray-500">Expected guests</p>
+                <p className="font-medium">{event.expected_guests}</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              {/* <Clock3 className="h-5 w-5 text-gray-400" /> */}
+              <div>
+                <p className="text-xs text-gray-500">Status</p>
+                <p className="font-medium capitalize">{event.status}</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Drinks Card */}
+        <section className="rounded-2xl border bg-white p-6 shadow-sm">
+          <div className="mb-5 flex items-center justify-between">
+            <h2 className="text-lg font-semibold">Drinks</h2>
+            <span className="text-sm text-gray-500">
+              {event.drinks && event.drinks.length} items
+            </span>
+          </div>
+
+          <div className="space-y-3">
+            {event.drinks &&
+              event.drinks.map((drink) => (
+                <div
+                  key={drink.drink_id}
+                  className="flex items-center justify-between rounded-xl border p-3"
+                >
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={drink.logo}
+                      alt={drink.name}
+                      className="h-10 w-10 object-contain"
+                    />
+
+                    <div>
+                      <p className="font-medium">{drink.name}</p>
+                      <p className="text-sm text-gray-500">
+                        {drink.crate_size} bottles / crate
+                      </p>
+                    </div>
+                  </div>
+
+                  <span className="font-semibold">x {drink.quantity}</span>
+                </div>
+              ))}
+          </div>
+        </section>
+      </div>
+    </main>
+  );
 }
 
-export default function SingleEventOrder({ event }: { event: EventOrder }) {
+function StatusBadge({ state }: { state: EventOrder["status"] }) {
   return (
-    <main className="mx-auto w-full max-w-xl space-y-4">
-      <section className="flex justify-between">
-        <article>
-          <h2 className="text-xl font-semibold">#{event?.event_id}</h2>
-
-          {/*<p className="text-desc text-muted">
-            {`${new Date(order?.created_at).toLocaleDateString()} ${new Date(order?.created_at).toLocaleTimeString()}`}
-          </p>*/}
-        </article>
-
-        <article className="flex items-center gap-3">
-          {/* 
-          <SelectActionButton
-            tag="order_action_list"
-            title={"more"}
-            className="flex text-xl items-center space-x-2 h-fit bg-gray-300 cursor-pointer rounded-2xl outline-none"
-          >
-            <button>View Public</button>
-            <button>Share</button>
-          </SelectActionButton>
-          */}
-          {/* 
-          <button
-            onClick={deleteOrderAction}
-            disabled={state?.loading === "delete"}
-            className="text-danger 
-            px-2 space-x-2 bg-danger/40 cursor-pointer rounded"
-          >
-            {state?.loading === "delete" ? (
-              <FontAwesomeIcon icon={faSpinner} />
-            ) : (
-              <>
-                <FontAwesomeIcon icon={faTrash} />
-                <span>Delete</span>
-              </>
-            )}
-          </button>{" "}
-        */}
-        </article>
-      </section>
-
-      <section className="space-y-4">
-        <div className="card p-0 space-y-4">
-          {/*<ErrorText>{state?.error}</ErrorText>*/}
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold">Order Status</h2>
-            <p className="capitalize">{event.status}</p>
-            {/* <SelectForm
-              onChangeValue={handleSelectChanges}
-              field="status"
-              title={order?.status?.toUpperCase()}
-              className="w-fit"
-              items={[
-                { name: "Pending", id: "pending" },
-                { name: "Processing", id: "processing" },
-                { name: "Cancelled", id: "cancelled" },
-                { name: "On delivery", id: "on delivery" },
-                { name: "Completed", id: "completed" },
-              ]}
-            /> 
-              */}
-          </div>
-        </div>
-        {/* Drinkd List */}
-        <div className="border-b-border py-4 border-b">
-          {/*<ul className="space-y-4">
-              {order?.cart_items?.map((item) => (
-                <li
-                  key={item.product_id}
-                  className="flex items-center justify-between"
-                >
-                  <article>
-                    <div className="">
-                      {item?.images && (
-                        <Image
-                          className="w-auto h-auto"
-                          src={item?.images[0]}
-                          height={20}
-                          width={40}
-                          alt={item.name}
-                        />
-                      )}
-                      <h3 className="text-base font-semibold">{item?.name}</h3>
-                    </div>
-                  </article>
-                  <div>
-                    <p className="font-semibold">NGN{item?.total}</p>
-                    <p className="text-desc text-muted">
-                      <span>NGN{item?.price}</span> x <span>{item?.qty}</span>
-                    </p>
-                  </div>
-                </li>
-              ))}
-            </ul>*/}
-        </div>
-
-        {/* Item List Total */}
-        <div className="flex justify-between">
-          <p>Total</p>
-          <p className="font-semibold">NGN{event?.total}</p>
-        </div>
-
-        {/*
-        <Card className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h2 className="text-xl font-semibold">Customer</h2>
-            <button className="bg-input px-4 py-1 text-white rounded">
-              <Link href={`/admin/customers/${order?.customer_id}`}>
-                <FontAwesomeIcon icon={faChevronRight} />
-              </Link>
-            </button>
-          </div>
-
-          <div className="flex justify-between">
-            <p className="text-based font-semibold">Name</p>
-            <p className="text-desc text-muted">{order?.customer_name}</p>
-          </div>
-
-          <div className="flex justify-between">
-            <p className="text-based font-semibold">Phone</p>
-            <p className="text-desc text-muted">0{order?.customer_phone}</p>
-          </div>
-
-          <div className="flex justify-between">
-            <p className="text-based font-semibold">Member since</p>
-            <p className="text-desc text-muted">
-              {`${new Date(order?.member_since).toLocaleDateString()}`}
-            </p>
-          </div>
-        </Card>
-        */}
-      </section>
-    </main>
+    <span
+      className={`rounded-full px-3 py-1 text-sm font-medium capitalize ${
+        state === "completed"
+          ? "bg-green-100 text-green-700"
+          : state === "cancelled"
+            ? "bg-red-100 text-red-700"
+            : state === "processing"
+              ? "bg-blue-100 text-blue-700"
+              : state === "pending"
+                ? "bg-yellow-100 text-yellow-700"
+                : "bg-gray-100 text-gray-700"
+      }`}
+    >
+      {state}
+    </span>
   );
 }
