@@ -8,6 +8,7 @@ import {
 } from "react-router";
 import type { Route } from "./+types/root";
 import NavigationBar from "./components/Navbar";
+import { AuthUserContext } from "./context";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const links: Route.LinksFunction = () => [
@@ -30,6 +31,11 @@ export const links: Route.LinksFunction = () => [
     href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
   },
 ];
+/* eslint-disable react-refresh/only-export-components */
+export async function loader({ context }: Route.LoaderArgs) {
+  const user = context.get(AuthUserContext);
+  return user;
+}
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (

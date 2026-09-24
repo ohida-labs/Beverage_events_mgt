@@ -1,6 +1,6 @@
 import { user_cookie_token } from "../../cookies.server";
 import { data } from "react-router";
-import type { Route } from "./+types/home";
+import type { Route } from "./+types/dashboard_home";
 import LastestActiveOrder from "../../components/LatestActiveOrder";
 import DraftsOrderList from "../../components/DraftOrders";
 import { AuthUserContext } from "../../context";

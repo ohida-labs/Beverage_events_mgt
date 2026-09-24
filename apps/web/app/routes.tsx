@@ -8,7 +8,7 @@ import {
 } from "@react-router/dev/routes";
 export default [
   //Public: landing
-  route("/", "./pages/home_layout.tsx", [index("./pages/landingpage.tsx")]),
+  route("/", "./pages/layout.tsx", [index("./pages/landingpage.tsx")]),
 
   //auth: /login, /register, /forgot_password
   layout("./pages/auth/layout.tsx", [
@@ -20,10 +20,10 @@ export default [
   //Dashboard
   ...prefix("dashboard", [
     layout("./pages/dashboard/dashboard_layout.tsx", [
-      index("./pages/dashboard/home.tsx"),
+      index("./pages/dashboard/dashboard_home.tsx"),
 
       //ORDERS
-      route("orders", "./pages/dashboard/orders/order_root.tsx", [
+      route("events", "./pages/dashboard/orders/order_root.tsx", [
         index("./pages/dashboard/orders/orders_list.tsx"),
         route("new", "./pages/dashboard/orders/single_order/create_order.tsx"),
         route(
@@ -37,7 +37,7 @@ export default [
       ]),
 
       //Setting
-      //  route("settings", ""),
+      route("settings", "./pages/dashboard/settings/settings_page.tsx"),
     ]),
   ]),
 

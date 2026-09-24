@@ -141,7 +141,8 @@ export const UserIsAuthorizedCheck = asyncHandler(
         },
       });
     } catch (e) {
-      if (e.code === "ERR_JWT_EXPIRED") {
+      console.log(e.message);
+      if (e.code === "ERR_JWT_EXPIRED" || e.message === "jwt expired") {
         throw new AuthError("Session timed-out", 401);
       }
 
@@ -155,6 +156,7 @@ export const UserIsAuthorizedCheck = asyncHandler(
       if (e.code === "ERR_JWS_INVALID") {
         throw new AuthError("Invalid token received! ", 400);
       }
+      throw new AuthError("Could not Authenticate", 500);
     }
   },
 );
