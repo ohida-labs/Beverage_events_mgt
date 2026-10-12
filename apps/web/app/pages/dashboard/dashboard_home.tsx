@@ -36,6 +36,34 @@ export async function loader({ request, context }: Route.LoaderArgs) {
           quantity: 67,
           price: 1900,
         },
+        {
+          id: "2",
+          name: "Beer",
+          crate_quantity: 22232,
+          quantity: 67,
+          price: 1900,
+        },
+        {
+          id: "3",
+          name: "Beer",
+          crate_quantity: 22232,
+          quantity: 67,
+          price: 1900,
+        },
+        {
+          id: "4",
+          name: "Beer",
+          crate_quantity: 22232,
+          quantity: 67,
+          price: 1900,
+        },
+        {
+          id: "5",
+          name: "Beer",
+          crate_quantity: 22232,
+          quantity: 67,
+          price: 1900,
+        },
       ],
     },
     draft_events: [
@@ -70,19 +98,18 @@ export default function DashboardHomeView({
 
   return (
     <main className="md:max-w-160 shadow space-y-6  p-4 md:mx-auto">
-      <div className="card rounded w-full">
-        <h2 className="text-xl font-bold">Good afternoon, Daniel</h2>
-        <p className="text-xs text-muted">
-          Welcome to Guiness. Make order of drinks for your event
-        </p>
-      </div>
-      <LastestActiveOrder event={active_event} />
-      <div className="card bg-secondary70 gap-y-3 w-full flex gap-x-4 flex-wrap">
-        <p>We are happy to take more orders for your event from you</p>
-        <button className="submit_button  px-3 py-1 rounded-full text-[0.85rem]">
-          Place an order
+      <div className="card space-y-6 rounded w-full flex flex-col">
+        <div>
+          <h2 className="text-xl font-bold">Good afternoon, Daniel</h2>
+          <p className="text-xs text-muted">
+            Welcome to Guiness. Make order of drinks for your event
+          </p>
+        </div>
+        <button className="submit_button md:w-fit  w-full justify-center transition px-3 py-4 md:py-1 rounded-full text-[0.85rem]">
+          Place an Order
         </button>
       </div>
+      <LastestActiveOrder event={active_event} />
       <DraftsOrderList events={draft_events} />
     </main>
   );

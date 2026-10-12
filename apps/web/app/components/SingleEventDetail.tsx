@@ -10,7 +10,7 @@ type EventOrder = {
   event_id: string;
   name: string;
   total: number;
-  status: "draft" | "pending" | "processing" | "cancelled" | "completed";
+  status: string;
   event_date?: Date;
   expected_guests?: number;
   drinks?: Drink[];
@@ -22,16 +22,15 @@ export default function EventPage({ event }: { event: EventOrder }) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm text-gray-500">Event</p>
+          <p className="text-lg text-gray-500">Event Detail</p>
           <h1 className="text-2xl font-semibold">{event.name}</h1>
         </div>
-
-        <StatusBadge state={event.status} />
+        <StatusBadge state="cancelled" />
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
         {/* Event Card */}
-        <section className="rounded-2xl border bg-white p-6 shadow-sm">
+        <section className="rounded-2xl border card p-6 shadow-sm">
           <h2 className="mb-5 text-lg font-semibold">Event details</h2>
 
           <div className="space-y-5">
@@ -65,7 +64,7 @@ export default function EventPage({ event }: { event: EventOrder }) {
         </section>
 
         {/* Drinks Card */}
-        <section className="rounded-2xl border bg-white p-6 shadow-sm">
+        <section className="rounded-2xl border card p-6 shadow-sm">
           <div className="mb-5 flex items-center justify-between">
             <h2 className="text-lg font-semibold">Drinks</h2>
             <span className="text-sm text-gray-500">

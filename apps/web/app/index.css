@@ -50,10 +50,8 @@
   :root {
     --text: hsl(218, 11%, 65%);
     --text-h: #f3f4f6;
-
     --background: hsl(80, 12%, 5%);
     --background_light: hsl(80, 12%, 10%);
-
     --input: hsl(80, 12%, 20%);
     --foreground: #fff;
     --border: #2e303a;

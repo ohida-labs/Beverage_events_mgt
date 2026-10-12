@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS events (
    user_id uuid REFERENCES users(user_id) ON DELETE SET NULL,
    event_poster text,
       event_name text not null,
-   event_date TIMESTAMPTZ not null,
+   event_date  TIMESTAMPTZ not null,
    expected_guests INTEGER NOT NULL CHECK (expected_guests > 0),
 
    state event_state NOT NULL DEFAULT 'pending',
