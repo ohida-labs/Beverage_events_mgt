@@ -1,29 +1,36 @@
 @import "tailwindcss";
 :root {
   /* colors */
-  --background: hsl(0, 0%, 90%);
-  --background_light: hsl(0, 0%, 70%);
+  --background_light: hsl(54 100% 97%);
+  --background: hsl(54 51% 92%);
+  --foreground: hsl(54 31% 87%);
 
-  --foreground: hsl(0, 0%, 10%);
-
-  --text: hsl(267, 8%, 42%);
-  --text-h: hsl(267, 8%, 5%);
+  --text: hsl(46 100% 2%);
+  --text-h: hsl(267, 8%, 42%);
 
   --border: hsl(260, 6%, 90%);
 
-  --primary-bg90: hsl(39, 100%, 92%);
-  --primary-bg70: hsl(40, 96%, 85%);
-  --primary: hsl(40, 93%, 15%);
+  --primary-dark: hsl(54, 100%, 5%);
+  --primary-light: hsl(54, 100%, 20%);
 
-  --secondary-bg90: hsl(6, 100%, 99%);
-  --secondary-bg70: hsl(6, 100%, 85%);
-  --secondary: hsl(6, 100%, 70%);
+  --secondary-dark: hsl(241, 33%, 30%);
+  --secondary-light: hsl(241, 33%, 55%);
 
+  --primary: hsl(54 100% 12%);
+  --secondary: hsl(241 33% 37%);
+
+  --highlight: hsl(54 100% 94%);
   --shadow-bg:
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
   --danger-red: hsl(6, 100%, 30%);
-  --input: hsl(180, 1%, 86%);
-  --muted: hsl(140, 0%, 50%);
+  --border: hsl(54 17% 45%);
+  --border-muted: hsl(54 18% 57%);
+  --danger: hsl(9 21% 41%);
+  --warning: hsl(52 23% 34%);
+  --success: hsl(147 19% 36%);
+  --info: hsl(217 22% 41%);
+  --input: (54 100% 100%);
+  --muted: hsl(53 32% 23%);
 
   /* font family */
   --sans: system-ui, "Segoe UI", Roboto, sans-serif;
@@ -48,15 +55,27 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --text: hsl(218, 11%, 65%);
-    --text-h: #f3f4f6;
-    --background: hsl(80, 12%, 5%);
-    --background_light: hsl(80, 12%, 10%);
+    --text: hsl(54 75% 89%);
+    --text-h: hsl(218, 11%, 65%);
+    --background: hsl(51 77% 3%);
+    --background_light: hsl(53 47% 6%);
     --input: hsl(80, 12%, 20%);
-    --foreground: #fff;
-    --border: #2e303a;
+    --foreground: hsl(47 100% 1%);
+    --border: hsl(53 32% 23%);
     --shadow-bg:
       rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+    --muted: hsl(54 22% 40%);
+
+    /*
+--highlight: hsl(53 22% 34%);
+--border-muted: hsl(53 58% 13%);
+--primary: hsl(53 40% 57%);
+--secondary: hsl(238 70% 80%);
+--danger: hsl(9 26% 64%);
+--warning: hsl(52 19% 57%);
+--success: hsl(146 17% 59%);
+--info: hsl(217 28% 65%);
+  */
   }
 }
 
@@ -141,8 +160,8 @@
 @layer components {
   /*Submission button*/
   .submit_button {
-    color: var(--foreground);
-    background-color: var(--primary);
+    color: var(--text);
+    background-color: var(--secondary);
   }
 
   /*Color and spaing*/
