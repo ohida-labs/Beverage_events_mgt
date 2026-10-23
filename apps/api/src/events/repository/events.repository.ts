@@ -7,39 +7,152 @@ export const CreateNewEvent = async (
   userId: string,
   event_arg: ICreateEvent,
 ) => {
+  const client = await pool.connect();
+
   try {
-    const query = {
-      text: `
-         insert into users (user_id, event_name, expected_guests, event_date, drinks)
-         values ($1, $2, $3, $4, $5)
-        `,
-      values: [
-        userId,
-        event_arg.event_name,
-        event_arg.expected_guests,
-        event_arg.event_date,
-        event_arg.drinks,
-      ],
-    };
+    const { event_name, event_date, expected_guests, items } = event_arg;
 
-    const res = await pool.query(query);
+    if (
+      !event_name?.trim() ||
+      !event_date ||
+      !Number.isInteger(expected_guests) ||
+      expected_guests < 1 ||
+      !Array.isArray(items) ||
+      items.length === 0
+    ) {
+      throw new ValidationError(
+        {},
+        "Provide valid event details and at least one drink.",
+      );
+    }
 
-    const event = res.rows[0].event_id as {
-      event_id: string;
-    };
+    const seenDrinkIds = new Set<string>();
+
+    for (const item of items) {
+      if (
+        !item ||
+        typeof item.drink_id !== "string" ||
+        !Number.isInteger(item.quantity) ||
+        item.quantity < 1 ||
+        seenDrinkIds.has(item.drink_id)
+      ) {
+        throw new ValidationError(
+          {},
+          "Drink selections must have unique IDs and valid quantities.",
+        );
+      }
+
+      seenDrinkIds.add(item.drink_id);
+    }
+
+    await client.query("BEGIN");
+
+    // Confirm that every selected drink exists and is available.
+    const drinkResult = await client.query(
+      `SELECT drink_id, price_minor_units
+       FROM beverage_items
+       WHERE drink_id = ANY($1::uuid[])
+         AND is_available = TRUE`,
+      [items.map((item) => item.drink_id)],
+    );
+
+    if (drinkResult.rows.length !== items.length) {
+      throw new ValidationError(
+        {},
+        "One or more selected drinks are invalid or unavailable.",
+      );
+    }
+
+    const drinksById = new Map(
+      drinkResult.rows.map((drink) => [
+        drink.drink_id,
+        drink.price_minor_units,
+      ]),
+    );
+
+    // Create the event for the authenticated customer.
+    const eventResult = await client.query(
+      `INSERT INTO events (
+         customer_id,
+         event_name,
+         event_date,
+         expected_guests
+       )
+       VALUES ($1, $2, $3, $4)
+       RETURNING *`,
+      [userId, event_name.trim(), event_date, expected_guests],
+    );
+
+    const event = eventResult.rows[0];
+
+    // Save every selected drink and its database price.
+    for (const item of items) {
+      const unitPrice = drinksById.get(item.drink_id);
+
+      await client.query(
+        `INSERT INTO event_items (
+           event_id,
+           drink_id,
+           quantity,
+           unit_price_minor_units
+         )
+         VALUES ($1, $2, $3, $4)`,
+        [event.event_id, item.drink_id, item.quantity, unitPrice],
+      );
+    }
+
+    await client.query("COMMIT");
 
     return event;
-  } catch (e) {
-    handlePgError(e);
+  } catch (error) {
+    await client.query("ROLLBACK");
+
+    if (error instanceof ValidationError) {
+      throw error;
+    }
+
+    handlePgError(error);
+  } finally {
+    client.release();
   }
 };
 
 export const GetEvent = async (user_id: string, event_id: string) => {
   try {
     const query = `
-         select * from events 
-         where user_id = $1 AND
-         event_id = $2 
+           SELECT
+          e.event_id,
+          e.customer_id,
+          e.event_name,
+          e.event_date,
+          e.expected_guests,
+          e.event_poster_url,
+          e.status,
+          e.handled_by,
+          e.rejection_reason,
+          e.created_at,
+          e.updated_at,
+          COALESCE(
+            json_agg(
+              json_build_object(
+                'drink_id', b.drink_id,
+                'name', b.name,
+                'image_url', b.image_url,
+                'quantity', ei.quantity,
+                'unit_price_minor_units', ei.unit_price_minor_units
+              )
+            ) FILTER (WHERE b.drink_id IS NOT NULL),
+            '[]'::json
+          ) AS drinks
+        FROM events e
+        LEFT JOIN event_items ei
+          ON ei.event_id = e.event_id
+        LEFT JOIN beverage_items b
+          ON b.drink_id = ei.drink_id
+        WHERE e.customer_id = $1
+          AND e.event_id = $2
+        GROUP BY e.event_id
+       
         `;
 
     const res = await pool.query(query, [user_id, event_id]);
@@ -59,7 +172,7 @@ export const GetAllEvents = async (user_id: string, filter?: IFilterEvents) => {
   try {
     const query = `
          select * from events 
-         where user_id = $1`;
+         where customer_id = $1`;
 
     const res = await pool.query(query, [user_id]);
 
@@ -86,8 +199,8 @@ export const UpdateEvent = async (
           UPDATE events
           SET ${setClause} 
           WHERE event_id = $${QueryWithIds.length}
-          AND user_id = $${QueryWithIds.length - 1} 
-          RETURNING event_id, user_id, event_name;         
+          AND customer_id = $${QueryWithIds.length - 1} 
+          RETURNING event_id, customer_id, event_name;         
           `;
 
     const query = {
@@ -148,7 +261,7 @@ export const GetEventWithUser = async (user_id: string, event_id: string) => {
      to_jsonb(u) AS user
      from events e
      left join users u
-     on e.user_id = u.user_id
+     on e.customer_id = u.user_id
      where e.event_id = $1;
     `;
 
@@ -177,7 +290,7 @@ export const GetAllEventsWithUser = async (arg: { filter: IFilterEvents }) => {
     u.user_id as userId,
     from events e 
     left join users u 
-    on e.user_id = u.user_id
+    on e.customer_id = u.user_id
     where (e.name ILIKE  c OR u.email ILIKE $1 || '%')
     offset $3
     limit $4

@@ -1,12 +1,12 @@
 export interface IUser {
   user_id: string;
   email: string;
-  password: string;
+  password_hash: string;
   role: string;
   profile: string;
   first_name: string;
   last_name?: string;
-  priority: number;
+  //  priority: number;
   blacklisted: boolean;
   blacklisted_reason: string;
   phone_number: string;

@@ -21,9 +21,12 @@ interface IUpdateEvent {
 
 interface ICreateEvent {
   event_name: string;
-  expected_guests: string;
+  expected_guests: number;
   event_date: string;
-  drinks: string[];
+  items: {
+    drink_id: string;
+    quantity: number;
+  }[];
 }
 
 interface IFilterEvents {

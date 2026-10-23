@@ -37,6 +37,8 @@ export const CreateNewEventService = async (
 ) => {
   const user = await GetUser(userId);
 
+  console.log(arg);
+  console.log(user);
   //Check if they are blaclisted;
   if (user && user.blacklisted) {
     throw new EventError(
@@ -83,7 +85,7 @@ export const GetEventDetailService = async (arg: {
   const user = await GetUser(arg.userId);
 
   //Check admin priortiy if they allow to view full event details
-  if (user && user.role === "admin" && user.priority === 1) {
+  if (user && user.role === "admin") {
     throw new EventError(
       "You are not permitted to view this event order.",
       401,
@@ -108,12 +110,10 @@ export const GetAllEventsService = async (arg: {
   return { events };
 };
 
-
 //Add Drinks;
 //Remove Drinks;
 //Update Drinks
 //Load Drinks;
-
 
 //Later
 

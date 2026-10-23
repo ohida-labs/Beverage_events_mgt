@@ -76,11 +76,10 @@ export async function GetDraftedEventOrders(token: string) {
   };
 }
 
-export async function GetUserEventOrders(token: string) {
+export async function GetUserEventOrders() {
   /*const response = await ApiFetchHelper(
     "/events?limit=1&sortBy=created_at&sortOrder=desc&state=pending",
-    token,
-  );
+    token, );
 
   const result = await response.json();
 
@@ -90,41 +89,32 @@ export async function GetUserEventOrders(token: string) {
  
   return result?.data?.events?.[0] ?? null;
  */
+  /*
+  const response = await fetch(
+    `${import.meta.env.VITE_BACKEND_URL}/events`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
 
-  console.log(token + "21312321");
-  return [
-    {
-      event_id: "ORD-1212",
-      name: "Oroma birthday",
-      total: 45000,
-      status: "delivered",
-    },
-    {
-      event_id: "ORD-1213",
-      name: "Collins birthday",
-      total: 45921,
-      status: "processing",
-    },
-    {
-      event_id: "ORD-1214",
-      name: "Collins birthday",
-      total: 45921,
-      status: "processing",
-    },
-    {
-      event_id: "ORD-1215",
-      name: "Collins birthday",
-      total: 45921,
-      status: "processing",
-    },
-    {
-      event_id: "ORD-1216",
-      name: "Collins birthday",
-      total: 45921,
-      status: "processing",
-    },
-  ];
+  const result = await response.json();
+
+  if (!response.ok || !result.status) {
+    throw data(
+      {
+        error: result.error?.message || "Failed to load your events.",
+      },
+      { status: response.status },
+    );
+  }
+
+  return {
+    events: result.data.events ?? [],
+  };*/
 }
+
 export async function GetSingleUserEventOrder(
   token: string,
   event_order_id: string,

@@ -41,7 +41,7 @@ export const LoginWithEmailAndPassword = async (arg: IAuth) => {
     }
 
     //Check if email and password match with the one on db;
-    if (!user.email || !bc.compare(arg.password, user.password)) {
+    if (!user.email || !bc.compare(arg.password, user.password_hash)) {
       throw new AuthError("Invalid Email or Password");
     }
 
@@ -50,7 +50,6 @@ export const LoginWithEmailAndPassword = async (arg: IAuth) => {
       {
         user_id: user.user_id,
         role: user.role,
-        priority: user.priority,
       },
       process.env.JWT_SECRET,
       {
@@ -90,7 +89,6 @@ export const SignupWithEmailAndPassword = async (arg: ISignup) => {
     {
       user_id: newuser.user_id,
       role: newuser.role,
-      priority: newuser.priority,
     },
     process.env.JWT_SECRET,
     {
@@ -112,7 +110,10 @@ export const PasswordResetService = async (arg: IResetPassword) => {
   }
 
   //2.compare old passwords (in db and from user)
-  if (arg.source === "change_password" && user.password !== arg.old_password) {
+  if (
+    arg.source === "change_password" &&
+    user.password_hash !== arg.old_password
+  ) {
     throw new AuthError("Your current password is not correct");
   }
 

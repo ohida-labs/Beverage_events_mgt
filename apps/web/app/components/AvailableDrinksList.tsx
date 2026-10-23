@@ -1,4 +1,4 @@
-import { useSearchParams } from "react-router";
+/*import { useSearchParams } from "react-router";
 import { useState } from "react";
 type Drink = {
   drink_id: string;
@@ -71,17 +71,17 @@ export default function AvailableDrinksList({
     }));
   };
 
-  /*  const confirmQuantity = (drinkId: string) => {
-    const quantity = pendingQuantities[drinkId];
+  // const confirmQuantity = (drinkId: string) => {
+    //const quantity = pendingQuantities[drinkId];
 
-    if (!quantity || quantity < 1) return;
+    //if (!quantity || quantity < 1) return;
 
-    setSelectedDrinks((current) => ({
-      ...current,
-      [drinkId]: quantity,
-    }));
-  };
-*/
+  //  setSelectedDrinks((current) => ({
+  //    ...current,
+  //    [drinkId]: quantity,
+  //  }));
+//  };
+
   const handleSave = () => {
     const selected: SelectedDrink[] = Object.entries(selectedDrinks).map(
       ([drink_id, quantity]) => ({
@@ -108,7 +108,6 @@ export default function AvailableDrinksList({
       rounded-t-2xl 
       card shadow-xl sm:h-[85vh] sm:rounded-2xl"
       >
-        {/* Header */}
         <div className="flex shrink-0 items-center justify-between border-b px-5 py-4">
           <div>
             <h2 className="text-lg font-semibold">Available Drinks</h2>
@@ -128,7 +127,6 @@ export default function AvailableDrinksList({
           </button>
         </div>
 
-        {/* Drinks */}
         <div className="flex-1 overflow-y-auto px-5 py-4">
           <div className="space-y-3">
             {drinks &&
@@ -142,7 +140,6 @@ export default function AvailableDrinksList({
                      cursor-pointer rounded-xl bg-input p-4 transition hover:text-primary"
                   >
                     <div className="flex items-center gap-4">
-                      {/* Checkbox */}
                       <input
                         type="checkbox"
                         className="peer sr-only"
@@ -164,7 +161,6 @@ export default function AvailableDrinksList({
                       "
                       ></div>
 
-                      {/* Logo */}
                       <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-gray-100">
                         <img
                           src={drink.logo}
@@ -173,7 +169,6 @@ export default function AvailableDrinksList({
                         />
                       </div>
 
-                      {/* Drink information */}
                       <div className="min-w-0 flex-1">
                         <p className="font-medium">{drink.name}</p>
 
@@ -186,7 +181,6 @@ export default function AvailableDrinksList({
                         </div>
                       </div>
 
-                      {/* Selected quantity */}
                       {selected && (
                         <span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700">
                           x {selected}
@@ -194,7 +188,6 @@ export default function AvailableDrinksList({
                       )}
                     </div>
 
-                    {/* Quantity controls */}
                     <div
                       className="mt-3  
                     items-center gap-2 pl-9 
@@ -215,17 +208,6 @@ export default function AvailableDrinksList({
                         placeholder="Quantity"
                       />
 
-                      {/* <button
-                        type="button"
-                        onClick={(event) => {
-                          event.preventDefault();
-                          event.stopPropagation();
-                          confirmQuantity(drink.drink_id);
-                        }}
-                        className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-800"
-                      >
-                        OK
-                      </button>*/}
                     </div>
                   </label>
                 );
@@ -233,7 +215,6 @@ export default function AvailableDrinksList({
           </div>
         </div>
 
-        {/* Sticky footer */}
         <div className="shrink-0  px-5 py-2">
           <button
             type="button"
@@ -244,6 +225,108 @@ export default function AvailableDrinksList({
           </button>
         </div>
       </div>
+    </div>
+  );
+}
+*/
+import { useSearchParams } from "react-router";
+import type { Dispatch, SetStateAction } from "react";
+import type { Drink } from "./EventForm";
+
+type Props = {
+  drinks: Drink[];
+  selectedDrinks: Record<string, number>;
+  setSelectedDrinks: Dispatch<SetStateAction<Record<string, number>>>;
+};
+
+export default function AvailableDrinksList({
+  drinks,
+  selectedDrinks,
+  setSelectedDrinks,
+}: Props) {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const isOpen = searchParams.get("drinks") === "open";
+
+  function closeModal() {
+    setSearchParams((params) => {
+      params.delete("drinks");
+      return params;
+    });
+  }
+
+  function toggleDrink(drinkId: string, checked: boolean) {
+    setSelectedDrinks((current) => {
+      if (!checked) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { [drinkId]: _, ...remaining } = current;
+        return remaining;
+      }
+
+      return {
+        ...current,
+        [drinkId]: current[drinkId] ?? 1,
+      };
+    });
+  }
+
+  function setQuantity(drinkId: string, quantity: number) {
+    setSelectedDrinks((current) => ({
+      ...current,
+      [drinkId]: quantity,
+    }));
+  }
+
+  if (!isOpen) return null;
+
+  return (
+    <div role="dialog" aria-modal="true">
+      <h2>Available Drinks</h2>
+
+      {drinks.map((drink) => {
+        const selected = drink.drink_id in selectedDrinks;
+
+        return (
+          <div key={drink.drink_id}>
+            <label>
+              <input
+                type="checkbox"
+                checked={selected}
+                onChange={(event) =>
+                  toggleDrink(drink.drink_id, event.currentTarget.checked)
+                }
+              />
+
+              {drink.name}
+            </label>
+
+            {drink.image_url && <img src={drink.image_url} alt={drink.name} />}
+
+            <p>{drink.name}</p>
+
+            <p>₦{(drink.price_minor_units / 100).toLocaleString("en-NG")}</p>
+
+            {selected && (
+              <input
+                type="number"
+                min={1}
+                value={selectedDrinks[drink.drink_id]}
+                aria-label={`Quantity for ${drink.name}`}
+                onChange={(event) => {
+                  const quantity = Number(event.target.value);
+
+                  if (Number.isInteger(quantity) && quantity >= 1) {
+                    setQuantity(drink.drink_id, quantity);
+                  }
+                }}
+              />
+            )}
+          </div>
+        );
+      })}
+
+      <button type="button" onClick={closeModal}>
+        Done
+      </button>
     </div>
   );
 }

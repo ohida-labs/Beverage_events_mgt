@@ -56,9 +56,9 @@ export const CreateUser = async (user_arg: {
   try {
     const query = {
       text: `
-         insert into users (email, password, first_name, last_name)
+         insert into users (email, password_hash, first_name, last_name)
          values ($1, $2, $3, $4)
-         returning user_id, role, priority;
+         returning user_id, role;
         `,
       values: [
         user_arg.email,

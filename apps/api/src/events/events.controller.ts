@@ -27,7 +27,7 @@ export const getEventController = asyncHandler(
     const userData = await GetUserDetails(userId);
 
     //For user;
-    if (userData.role === "default" && userData.user_id === userId) {
+    if (userData.role === "consumer" && userData.user_id === userId) {
       const event = await GetUserEventDetailService({ userId, eventId });
       res.json({
         status: true,
@@ -38,7 +38,7 @@ export const getEventController = asyncHandler(
 
     //For an administrator;
     if (
-      userData.role !== "default" &&
+      userData.role !== "consumer" &&
       user_id &&
       userData.user_id !== user_id
     ) {
@@ -65,7 +65,7 @@ export const getAllEventsController = asyncHandler(
     //For personal users;
     if (
       userData &&
-      userData.role === "default" &&
+      userData.role === "consumer" &&
       userData.user_id === userId
     ) {
       const events = await GetAllUserEventsService({
@@ -80,7 +80,7 @@ export const getAllEventsController = asyncHandler(
     }
 
     //For an administrator;
-    if (userData.role !== "default" && userData) {
+    if (userData.role !== "consumer" && userData) {
       const event = await GetAllEventsService({ filter: filter || null });
       res.json({
         status: true,
@@ -110,8 +110,8 @@ export const UpdateEventController = asyncHandler(
     //Original user
     const userData = await GetUserDetails(userId);
 
-    //Check role: default
-    if (userData.role === "default" && userData.user_id === userId) {
+    //Check role: consumer
+    if (userData.role === "consumer" && userData.user_id === userId) {
       const update_event = await UpdateEventDetailsService({
         userId,
         eventId,
@@ -121,7 +121,7 @@ export const UpdateEventController = asyncHandler(
       return;
     }
 
-    if (userData.role !== "default" && userData.user_id !== user_id) {
+    if (userData.role !== "consumer" && userData.user_id !== user_id) {
       const update_event = await UpdateEventDetailsService({
         userId,
         eventId,
@@ -148,12 +148,12 @@ export const CreateEventController = asyncHandler(
     //Original user
     const userData = await GetUserDetails(userId);
 
-    //Check role: default
-    if (userData.role === "default" && userData.user_id === userId) {
+    //Check role: consumer
+    if (userData.role === "consumer" && userData.user_id === userId) {
       const create_event = await CreateNewEventService(userId, event_data);
       res.json({ status: true, data: create_event });
     }
-    if (userData.role !== "default" && userData)
+    if (userData.role !== "consumer" && userData)
       throw new AuthError(
         "Permission denied: Admin are not allow to create events!",
       );

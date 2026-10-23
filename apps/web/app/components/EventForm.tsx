@@ -1,105 +1,116 @@
-/*This is the event form for creating new event and */
-import { Form } from "react-router";
+import { useState } from "react";
+import { Form, useActionData, useNavigation } from "react-router";
 import AvailableDrinksList from "./AvailableDrinksList";
 import ParamsButtonForm from "./ParamsButtonForm";
-export default function EventForm() {
-  //set params
-  /*  const [searchParams, setSearchParams] = useSearchParams<>();
-  const isOpened = searchParams.get("show_available_drink") || null;
 
-const OpenDrinksPortal = () =>{
-  alert('dsa')
-  setSearchParams({ show_available_drink: 1 });
+export type Drink = {
+  drink_id: string;
+  name: string;
+  image_url: string | null;
+  price_minor_units: number;
+  is_available: boolean;
 };
 
-const CloseDrinksPortal = () =>{
-  setSearchParams();
-};*/
+type EventFormProps = {
+  drinks: Drink[];
+};
 
-  const drinks = [
-    {
-      drink_id: "drink1",
-      name: "Malta Guiness 1.5l 24pieces",
-      logo: "/favicon.ico",
-      crate_size: 24,
-      unit_price: 5600,
-    },
-    {
-      drink_id: "drink2",
-      name: "Malta Guiness 1.5l 24pieces",
-      logo: "/favicon.ico",
-      crate_size: 24,
-      unit_price: 5600,
-    },
-    {
-      drink_id: "drink3",
-      name: "Guiness 1.4l 12pieces",
-      logo: "/favicon.ico",
-      crate_size: 24,
-      unit_price: 5600,
-    },
-    {
-      drink_id: "drink4",
-      name: "Gordons 1.5l 4pieces",
-      logo: "/favicon.ico",
-      crate_size: 24,
-      unit_price: 5600,
-    },
-  ];
+export default function EventForm({ drinks }: EventFormProps) {
+  const actionData = useActionData();
+  const navigation = useNavigation();
+
+  const [selectedDrinks, setSelectedDrinks] = useState<Record<string, number>>(
+    {},
+  );
+  const isSubmitting = navigation.state === "submitting";
+
   return (
     <>
-      <Form className="space-y-6">
+      {actionData?.error && (
+        <div
+          role="alert"
+          className="rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-700"
+        >
+          {actionData.error}
+        </div>
+      )}
+
+      <Form method="post" className="space-y-6">
         <section className="card space-y-6">
-          <div className="group space-y-3">
-            <label className="block ">Event Name</label>
+          <div>
+            <label htmlFor="event_name">Event Name</label>
             <input
-              className="block
-            focus:border transition duration-200 ease-out"
+              id="event_name"
               name="event_name"
-              placeholder="Bolaji Birthday party"
+              placeholder="My Event"
               required
             />
           </div>
 
           <div>
-            <label>Event Date</label>
-            <input name="event_date" type="date" />
+            <label htmlFor="event_date">Event Date</label>
+            <input id="event_date" name="event_date" type="date" required />
           </div>
 
           <div>
-            <label>Expected Guests</label>
-            <input type="number" name="event_guests" />
+            <label htmlFor="expected_guests">Expected Guests</label>
+            <input
+              id="expected_guests"
+              name="expected_guests"
+              type="number"
+              min={1}
+              required
+            />
           </div>
-
-          {/*<div>
-          <label>Event Flyer</label>
-          <input name="event_flyer" />
-        </div>
-       */}
         </section>
 
-        {/* Load available drinks for 'create' */}
         <section className="card">
           <div className="flex items-center justify-between">
-            {/* A simple cards to select drink*/}
             <label>Select Drinks</label>
             <ParamsButtonForm name="drinks" value="open">
-              <span className="font-semibold">+</span>
-              <span>Pick</span>
+              Select drinks
             </ParamsButtonForm>
           </div>
-        </section>
 
-        {/* selected drink */}
-        <section></section>
-        <button type="submit" className="submit_button">
-          Save
+          <input
+            type="hidden"
+            name="items"
+            value={JSON.stringify(
+              Object.entries(selectedDrinks).map(([drink_id, quantity]) => ({
+                drink_id,
+                quantity,
+              })),
+            )}
+          />
+
+          <ul>
+            {Object.entries(selectedDrinks).map(([drinkId, quantity]) => {
+              const drink = drinks.find((item) => item.drink_id === drinkId);
+
+              if (!drink) return null;
+
+              return (
+                <li key={drinkId}>
+                  {drink.name} — Quantity: {quantity}
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="submit_button disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {isSubmitting ? "Saving..." : "Save"}
         </button>
       </Form>
 
-      {/* drinks card */}
-
-      <AvailableDrinksList drinks={drinks} />
+      <AvailableDrinksList
+        drinks={drinks}
+        selectedDrinks={selectedDrinks}
+        setSelectedDrinks={setSelectedDrinks}
+      />
     </>
   );
 }

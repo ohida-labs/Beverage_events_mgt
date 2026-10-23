@@ -27,11 +27,11 @@ export default [
         index("./pages/dashboard/orders/orders_list.tsx"),
         route("new", "./pages/dashboard/orders/single_order/create_order.tsx"),
         route(
-          ":order_id",
+          ":event_id",
           "./pages/dashboard/orders/single_order/view_order.tsx",
         ),
         route(
-          ":order_id/edit",
+          ":event_id/edit",
           "./pages/dashboard/orders/single_order/edit_order.tsx",
         ),
       ]),

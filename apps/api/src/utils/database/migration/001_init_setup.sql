@@ -19,7 +19,7 @@ CREATE TABLE users (
     phone_number VARCHAR(20),
     profile_image_url TEXT,
     role user_role NOT NULL DEFAULT 'consumer',
-    blacklisted BOOLEAN NOT NULL DEFAULT TRUE,
+    blacklisted BOOLEAN NOT NULL DEFAULT FALSE,
     blacklisted_reason TEXT, 
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW() 

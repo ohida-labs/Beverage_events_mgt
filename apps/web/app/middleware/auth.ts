@@ -39,6 +39,7 @@ export const DefaultUserMiddleware: Route.MiddlewareFunction = async function (
   if (res.data.role === "admin" || res.data.role === "super_admin") {
     return redirect(`/admin`);
   }
+
   //Save the user context
   context.set(AuthUserContext, res.data);
 

@@ -73,7 +73,7 @@ export const CreateNewAdminUser = async (
 ) => {
   const user = await GetUser(admin_id);
 
-  if (user && user.role !== "default") {
+  if (user && user.role !== "consumer") {
     throw new AuthError(
       "Permission denied: You are not authorized to create a user",
     );
@@ -111,7 +111,7 @@ export const GetAllUsers = async (id: string, filter: IFilterUser) => {
       last_number: user.last_name,
       role: user.role,
       created: user.created_at,
-      priority: user.priority,
+      //priority: user.priority,
     })),
   };
 };

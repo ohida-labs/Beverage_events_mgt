@@ -5,15 +5,11 @@ import {
   getEventController,
   UpdateEventController,
 } from "./events.controller";
-import { GetAllUserEventsService } from "./events.service";
 
 const EventRoute = Router();
 
-EventRoute.route("/")
-  .post(CreateEventController) //By customer only
-  .get(GetAllUserEventsService);
+EventRoute.route("/").post(CreateEventController).get(getAllEventsController);
 
-//By admin and customer
 EventRoute.route("/:event_id")
   .get(getEventController)
   .patch(UpdateEventController);

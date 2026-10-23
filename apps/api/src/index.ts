@@ -17,6 +17,7 @@ import {
 //Routes
 import AuthRouter from "./auth/auth.route";
 import EventRoute from "./events/events.route";
+import BeverageRoute from "./beverages/beverages.routes";
 import UserRouter from "./users/users.route";
 import { AuthorizationClientRequest } from "./utils/middleware/auth";
 
@@ -41,6 +42,9 @@ app.use("/v0.1/user", AuthorizationClientRequest, UserRouter);
 
 //Events
 app.use("/v0.1/events", AuthorizationClientRequest, EventRoute);
+
+//all drinks
+app.use("/v0.1/beverages", BeverageRoute);
 
 app.get("/", (req, res) => {
   res.send("Welcome to BEMGS API!");

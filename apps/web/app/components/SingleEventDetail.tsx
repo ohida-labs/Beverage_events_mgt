@@ -1,4 +1,4 @@
-type Drink = {
+/*type Drink = {
   drink_id: string;
   name: string;
   logo: string;
@@ -15,17 +15,38 @@ type EventOrder = {
   expected_guests?: number;
   drinks?: Drink[];
 };
+*/
+
+type Drink = {
+  drink_id: string;
+  name: string;
+  image_url: string | null;
+  quantity: number;
+  unit_price_minor_units: number;
+};
+
+type EventOrder = {
+  event_id: string;
+  event_name: string;
+  total?: number;
+  status: string;
+  event_date: string;
+  expected_guests: number;
+  rejection_reason: string | null;
+  drinks: Drink[];
+};
 
 export default function EventPage({ event }: { event: EventOrder }) {
+  console.log(event);
   return (
     <main className="mx-auto max-w-5xl space-y-6 p-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <p className="text-lg text-gray-500">Event Detail</p>
-          <h1 className="text-2xl font-semibold">{event.name}</h1>
+          <h1 className="text-2xl font-semibold">{event.event_name}</h1>
         </div>
-        <StatusBadge state="cancelled" />
+        <StatusBadge state={event.status} />
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
@@ -39,8 +60,11 @@ export default function EventPage({ event }: { event: EventOrder }) {
               <div>
                 <p className="text-xs text-gray-500">Event date</p>
                 <p className="font-medium">
-                  {event.event_date &&
-                    new Date(event.event_date).toLocaleDateString()}
+                  {new Date(event.event_date).toLocaleDateString("en-NG", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}{" "}
                 </p>
               </div>
             </div>
@@ -68,7 +92,7 @@ export default function EventPage({ event }: { event: EventOrder }) {
           <div className="mb-5 flex items-center justify-between">
             <h2 className="text-lg font-semibold">Drinks</h2>
             <span className="text-sm text-gray-500">
-              {event.drinks && event.drinks.length} items
+              {event.drinks.length} items
             </span>
           </div>
 
@@ -80,21 +104,31 @@ export default function EventPage({ event }: { event: EventOrder }) {
                   className="flex items-center justify-between rounded-xl border p-3"
                 >
                   <div className="flex items-center gap-3">
-                    <img
-                      src={drink.logo}
-                      alt={drink.name}
-                      className="h-10 w-10 object-contain"
-                    />
+                    {drink.image_url ? (
+                      <img
+                        src={drink.image_url}
+                        alt={drink.name}
+                        className="h-10 w-10 object-contain"
+                      />
+                    ) : (
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-xs text-gray-500">
+                        N/A
+                      </div>
+                    )}
 
                     <div>
                       <p className="font-medium">{drink.name}</p>
                       <p className="text-sm text-gray-500">
-                        {drink.crate_size} bottles / crate
+                        ₦
+                        {(drink.unit_price_minor_units / 100).toLocaleString(
+                          "en-NG",
+                        )}{" "}
+                        per unit
                       </p>
                     </div>
                   </div>
 
-                  <span className="font-semibold">x {drink.quantity}</span>
+                  <span className="font-semibold">x{drink.quantity}</span>
                 </div>
               ))}
           </div>
