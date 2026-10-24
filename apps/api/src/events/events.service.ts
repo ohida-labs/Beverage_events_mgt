@@ -1,9 +1,11 @@
 import NotFoundError from "@/utils/exceptions/NotFound";
 import {
   CreateNewEvent,
+  GetAllAssignedEvents,
   GetAllEvents,
   GetAllEventsWithUser,
   GetEvent,
+  UpdateDistributionEvent,
   UpdateEvent,
   UpdateManagedEvent,
 } from "./repository/events.repository";
@@ -51,7 +53,7 @@ export const CreateNewEventService = async (
   return event;
 };
 
-//Depends on the role;
+//For consumer
 export const UpdateEventDetailsService = async (arg: {
   userId: string;
   eventId: string;
@@ -102,11 +104,23 @@ export const GetEventDetailService = async (arg: {
   return event;
 };
 
+//for non-consumer: admin and booking manager
 export const GetAllEventsService = async (arg: {
   filter?: IFilterEvents | null;
 }) => {
-  //Check prioty of which admin is allow to do here!
   const events = await GetAllEventsWithUser({ filter: arg.filter });
+  return events;
+};
+
+export const GetAllDistributionEventsService = async (arg: {
+  userId: string;
+  filter?: IFilterEvents | null;
+}) => {
+  const events = await GetAllAssignedEvents({
+    userId: arg.userId,
+    filter: arg.filter,
+  });
+
   return events;
 };
 
@@ -133,6 +147,38 @@ export const UpdateManagedEventService = async (arg: {
 
   if (!event) {
     throw new NotFoundError("Event not found.");
+  }
+
+  return { event };
+};
+
+//distributor Service
+
+export const UpdateDistributionEventService = async (arg: {
+  userId: string;
+  eventId: string;
+  data: { status?: string; [key: string]: unknown };
+}) => {
+  const { userId, eventId, data } = arg;
+
+  // Staff may update status only.
+  if (
+    Object.keys(data).length !== 1 ||
+    !Object.prototype.hasOwnProperty.call(data, "status")
+  ) {
+    throw new Error("Distribution staff can only update event status.");
+  }
+
+  if (data.status !== "in_progress" && data.status !== "completed") {
+    throw new Error("Invalid event status.");
+  }
+
+  const event = await UpdateDistributionEvent(eventId, userId, data.status);
+
+  if (!event) {
+    throw new Error(
+      "Event not found, not assigned to you, or status transition is invalid.",
+    );
   }
 
   return { event };

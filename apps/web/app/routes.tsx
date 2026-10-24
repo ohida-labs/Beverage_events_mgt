@@ -14,13 +14,18 @@ export default [
   layout("./pages/auth/layout.tsx", [
     route("login", "./pages/auth/login.tsx"),
     route("register", "./pages/auth/signup.tsx"),
-    route("forgot_pas  csword", "./pages/auth/forgot_password.tsx"),
+    route("forgot_password", "./pages/auth/forgot_password.tsx"),
   ]),
 
   //Dashboard
   ...prefix("dashboard", [
     layout("./pages/dashboard/dashboard_layout.tsx", [
       index("./pages/dashboard/dashboard_home.tsx"),
+
+      route(
+        "distribution",
+        "./pages/dashboard/distribution/distribution_events.tsx",
+      ),
 
       //ORDERS
       route("events", "./pages/dashboard/orders/order_root.tsx", [

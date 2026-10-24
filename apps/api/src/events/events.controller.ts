@@ -4,10 +4,12 @@ import ValidationError from "@/utils/exceptions/validationError";
 import { GetUserDetails } from "@/users/users.service";
 import {
   CreateNewEventService,
+  GetAllDistributionEventsService,
   GetAllEventsService,
   GetAllUserEventsService,
   GetEventDetailService,
   GetUserEventDetailService,
+  UpdateDistributionEventService,
   UpdateEventDetailsService,
   UpdateManagedEventService,
 } from "./events.service";
@@ -85,6 +87,19 @@ export const getAllEventsController = asyncHandler(
       return;
     }
 
+    //For distributor staff only
+    if (userData?.role === "distribution_staff") {
+      const events = await GetAllDistributionEventsService({
+        userId,
+        filter: filter || null,
+      });
+
+      res.json({
+        status: true,
+        data: { events, role: userData.role },
+      });
+      return;
+    }
     //For an administrator;
     if (userData.role !== "consumer" && userData) {
       const events = await GetAllEventsService({ filter: filter || null });
@@ -175,6 +190,12 @@ export const UpdateEventController = asyncHandler(
       });
     } else if (user.role === "admin" || user.role === "booking_manager") {
       result = await UpdateManagedEventService({
+        eventId,
+        data: updates,
+      });
+    } else if (user.role === "distribution_staff") {
+      result = await UpdateDistributionEventService({
+        userId,
         eventId,
         data: updates,
       });

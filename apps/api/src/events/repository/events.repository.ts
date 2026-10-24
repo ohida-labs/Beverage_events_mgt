@@ -163,6 +163,35 @@ export const UpdateManagedEvent = async (
   return result.rows[0];
 };
 
+//For Distributor staff only
+export const UpdateDistributionEvent = async (
+  eventId: string,
+  userId: string,
+  status: "in_progress" | "completed",
+) => {
+  const expectedStatus = status === "in_progress" ? "assigned" : "in_progress";
+
+  const query = {
+    text: `
+      UPDATE events
+      SET status = $1
+      WHERE event_id = $2
+        AND handled_by = $3
+        AND status = $4
+      RETURNING event_id, event_name, status, handled_by;
+    `,
+    values: [status, eventId, userId, expectedStatus],
+  };
+
+  const result = await pool.query(query);
+
+  if (result.rowCount === 0) {
+    return null;
+  }
+
+  return result.rows[0];
+};
+
 export const GetEvent = async (user_id: string, event_id: string) => {
   try {
     const query = `
@@ -360,6 +389,48 @@ export const GetAllEventsWithUser = async (arg: { filter: IFilterEvents }) => {
 
     const eventslist_user = res.rows;
     return eventslist_user;
+  } catch (e) {
+    handlePgError(e);
+  }
+};
+
+//For distributor to see
+export const GetAllAssignedEvents = async (arg: {
+  userId: string;
+  filter?: IFilterEvents | null;
+}) => {
+  try {
+    const filter = arg.filter ?? ({} as IFilterEvents);
+    const searchTerm = filter.search || "";
+
+    const query = `
+      SELECT
+        e.*,
+        COUNT(e.event_id) OVER () AS total_count,
+        u.first_name AS first_name,
+        u.email AS email,
+        u.user_id AS user_id
+      FROM events e
+      LEFT JOIN users u
+        ON e.customer_id = u.user_id
+      WHERE e.handled_by = $1
+        AND (
+          e.event_name ILIKE $2 || '%'
+          OR u.email ILIKE $2 || '%'
+        )
+      ORDER BY e.event_date DESC
+      OFFSET $3
+      LIMIT $4
+    `;
+
+    const res = await pool.query(query, [
+      arg.userId,
+      searchTerm,
+      filter.page || 0,
+      filter.limit || 50,
+    ]);
+
+    return res.rows;
   } catch (e) {
     handlePgError(e);
   }
