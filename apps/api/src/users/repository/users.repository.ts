@@ -150,7 +150,43 @@ export const DeleteUserFromDb = async (identifier: string) => {
 };
 
 //Admins: Gets all user;
+
 export const GetAllUsersDb = async (filter: IFilterUser) => {
+  try {
+    const page = Number(filter.page) || 0;
+    const limit = Number(filter.limit) || 20;
+    const search = String(filter.search || "").trim();
+    const offset = page * limit;
+
+    const query = `
+    SELECT
+    user_id,
+        email,
+        first_name,
+        role,
+        blacklisted,
+        blacklisted_reason,
+        -- phone_number,
+       -- profile,
+       created_at
+       FROM users
+       WHERE
+       email ILIKE '%' || $1 || '%'
+        OR first_name ILIKE '%' || $1 || '%'
+        ORDER BY created_at DESC
+      LIMIT $2
+      OFFSET $3
+      `;
+
+    const res = await pool.query(query, [search, limit, offset]);
+
+    return res.rows as IUser[];
+  } catch (e) {
+    handlePgError(e);
+  }
+};
+
+/*export const GetAllUsersDb = async (filter: IFilterUser) => {
   try {
     const query = `
          select * from users 
@@ -168,5 +204,5 @@ export const GetAllUsersDb = async (filter: IFilterUser) => {
   } catch (e) {
     handlePgError(e);
   }
-};
+};*/
 //Admin: batch change user: 'priority, roles'

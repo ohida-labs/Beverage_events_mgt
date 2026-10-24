@@ -22,7 +22,7 @@ export const getUserController = asyncHandler(
 
     const userData = await GetUserDetails(userId);
 
-    if (userData.role !== "default" && user_id) {
+    if (userData.role === "admin" && user_id) {
       const user = await GetUserDetails(user_id as string);
       res.json({
         status: true,
@@ -37,7 +37,6 @@ export const getUserController = asyncHandler(
             last_number: user.last_name,
             role: user.role,
             created: user.created_at,
-            priority: user.priority,
           },
         },
       });
@@ -57,7 +56,6 @@ export const getUserController = asyncHandler(
         phone_number: userData.phone_number,
         last_number: userData.last_name,
         role: userData.role,
-        priority: userData.priority,
       },
     });
   },

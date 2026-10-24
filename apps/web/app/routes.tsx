@@ -50,6 +50,9 @@ export default [
     layout("./pages/admin/layout.tsx", [
       //home
       index("./pages/admin/home.tsx"),
+
+      //all users
+      route("users", "./pages/admin/users/all_users.tsx"),
     ]),
   ]),
   /*

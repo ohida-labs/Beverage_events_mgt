@@ -4,6 +4,7 @@ import {
   CreateUserController,
   DeleteAccountController,
   getUserController,
+  GetUsersController,
   UpdateUserController,
 } from "./users.controller";
 
@@ -16,6 +17,6 @@ UserRouter.route("/")
   .patch(UpdateUserController)
   .delete(DeleteAccountController);
 
-UserRouter.route("/all").get(getUserController);
+UserRouter.route("/all").get(GetUsersController);
 
 export default UserRouter;

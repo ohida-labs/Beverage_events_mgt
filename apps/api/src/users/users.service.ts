@@ -88,7 +88,7 @@ export const CreateNewAdminUser = async (
 
   return newuser;
 };
-
+/*
 export const GetAllUsers = async (id: string, filter: IFilterUser) => {
   const user = await GetUser(id);
 
@@ -112,6 +112,31 @@ export const GetAllUsers = async (id: string, filter: IFilterUser) => {
       role: user.role,
       created: user.created_at,
       //priority: user.priority,
+    })),
+  };
+};
+*/
+
+export const GetAllUsers = async (id: string, filter: IFilterUser) => {
+  const user = await GetUser(id);
+
+  if (!user || user.role !== "admin") {
+    throw new AuthError("Only administrators can view all users.");
+  }
+
+  const allusers = await GetAllUsersDb(filter);
+
+  return {
+    users: allusers.map((user) => ({
+      user_id: user.user_id,
+      email: user.email,
+      blacklist: user.blacklisted,
+      profile: user.profile,
+      first_name: user.first_name,
+      blacklist_reason: user.blacklisted_reason,
+      phone_number: user.phone_number,
+      role: user.role,
+      created: user.created_at,
     })),
   };
 };
