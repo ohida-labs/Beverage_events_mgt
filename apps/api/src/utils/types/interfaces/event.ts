@@ -8,7 +8,7 @@ interface IEvent {
   drinks: string[];
   created_at: Date;
 }
-
+/*
 interface IUpdateEvent {
   event_name?: string;
   expected_guests?: number;
@@ -17,6 +17,34 @@ interface IUpdateEvent {
   handled_by?: string;
   event_date?: Date;
   drinks?: string[];
+}*/
+
+interface IUpdateEvent {
+  event_name?: string;
+  expected_guests?: number;
+  event_poster_url?: string | null;
+  status?:
+    | "pending"
+    | "approved"
+    | "rejected"
+    | "assigned"
+    | "in_progress"
+    | "completed"
+    | "cancelled";
+  handled_by?: string | null;
+  rejection_reason?: string | null;
+  event_date?: Date;
+}
+interface IManagedEventUpdate {
+  status?:
+    | "approved"
+    | "rejected"
+    | "assigned"
+    | "in_progress"
+    | "completed"
+    | "cancelled";
+  handled_by?: string | null;
+  rejection_reason?: string | null;
 }
 
 interface ICreateEvent {

@@ -5,6 +5,7 @@ import {
   GetAllEventsWithUser,
   GetEvent,
   UpdateEvent,
+  UpdateManagedEvent,
 } from "./repository/events.repository";
 import { GetUser } from "@/users/repository/users.repository";
 import EventError from "@/utils/exceptions/EventError";
@@ -37,14 +38,12 @@ export const CreateNewEventService = async (
 ) => {
   const user = await GetUser(userId);
 
-  console.log(arg);
-  console.log(user);
   //Check if they are blaclisted;
   if (user && user.blacklisted) {
     throw new EventError(
-      user?.blacklisted_reason,
-      401,
       "Permission denied: You are not permitted to create an event order.",
+      401,
+      user?.blacklisted_reason,
     );
   }
 
@@ -79,13 +78,14 @@ export const UpdateEventDetailsService = async (arg: {
 //admin
 export const GetEventDetailService = async (arg: {
   userId: string;
+  customer_id: string;
   eventId: string;
   // permissions: []
 }) => {
   const user = await GetUser(arg.userId);
 
   //Check admin priortiy if they allow to view full event details
-  if (user && user.role === "admin") {
+  if (user && user.role === "consumer") {
     throw new EventError(
       "You are not permitted to view this event order.",
       401,
@@ -93,13 +93,13 @@ export const GetEventDetailService = async (arg: {
     );
   }
 
-  const event = await GetEvent(arg.userId, arg.eventId);
+  const event = await GetEvent(arg.customer_id, arg.eventId);
 
   if (!event) {
     throw new NotFoundError("Event not Found!");
   }
 
-  return { event };
+  return event;
 };
 
 export const GetAllEventsService = async (arg: {
@@ -107,7 +107,35 @@ export const GetAllEventsService = async (arg: {
 }) => {
   //Check prioty of which admin is allow to do here!
   const events = await GetAllEventsWithUser({ filter: arg.filter });
-  return { events };
+  return events;
+};
+
+//For Manager to approve/reject and assign to distributor
+export const UpdateManagedEventService = async (arg: {
+  eventId: string;
+  data: IManagedEventUpdate;
+}) => {
+  const { eventId, data } = arg;
+
+  if (data.handled_by) {
+    const staff = await GetUser(data.handled_by);
+
+    if (!staff || staff.role !== "distribution_staff") {
+      throw new Error("Assigned user must be distribution staff.");
+    }
+  }
+
+  if (data.status === "rejected" && !data.rejection_reason?.trim()) {
+    throw new Error("A rejection reason is required.");
+  }
+
+  const event = await UpdateManagedEvent(eventId, data);
+
+  if (!event) {
+    throw new NotFoundError("Event not found.");
+  }
+
+  return { event };
 };
 
 //Add Drinks;

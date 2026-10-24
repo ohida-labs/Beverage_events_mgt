@@ -44,12 +44,12 @@ type EventApiResponse = {
   status: boolean;
   data: {
     event: EventOrder;
+    role: string;
   };
   error?: {
     message?: string;
   };
 };
-
 // eslint-disable-next-line react-refresh/only-export-components
 export async function loader({ request, params }: Route.LoaderArgs) {
   const cookieHeader = request.headers.get("Cookie");
@@ -67,7 +67,7 @@ export async function loader({ request, params }: Route.LoaderArgs) {
   }
 
   const response = await fetch(
-    `${import.meta.env.VITE_BACKEND_URL}/events/${eventId}`,
+    `${import.meta.env.VITE_BACKEND_URL}/events/${eventId}?user_id=2c4ec3e8-ec43-4e43-98eb-3beecfdb9e78`,
     {
       headers: {
         Authorization: `Bearer ${cookie.token}`,
@@ -86,7 +86,77 @@ export async function loader({ request, params }: Route.LoaderArgs) {
     );
   }
 
-  return { event: result.data.event };
+  return {
+    event: result.data.event,
+    role: result.data.role,
+  };
+}
+
+//For Booking MANGER ONLY
+// eslint-disable-next-line react-refresh/only-export-components
+export async function action({ request, params }: Route.ActionArgs) {
+  const cookieHeader = request.headers.get("Cookie");
+  const cookie = (await user_cookie_token.parse(cookieHeader)) || {};
+
+  if (!cookie.token) {
+    throw new Response("Unauthorized", { status: 401 });
+  }
+
+  const eventId = params.event_id;
+  const formData = await request.formData();
+
+  const actionType = formData.get("action");
+  const updates: Record<string, string> = {};
+
+  if (actionType === "approve") {
+    updates.status = "approved";
+  } else if (actionType === "reject") {
+    const reason = String(formData.get("rejection_reason") || "").trim();
+
+    if (!reason) {
+      return data({ error: "Enter a rejection reason." }, { status: 400 });
+    }
+
+    updates.status = "rejected";
+    updates.rejection_reason = reason;
+  } else if (actionType === "assign") {
+    const staffId = String(formData.get("handled_by") || "").trim();
+
+    if (!staffId) {
+      return data(
+        { error: "Enter a distribution staff user ID." },
+        { status: 400 },
+      );
+    }
+
+    updates.status = "assigned";
+    updates.handled_by = staffId;
+  } else {
+    return data({ error: "Invalid event action." }, { status: 400 });
+  }
+
+  const response = await fetch(
+    `${import.meta.env.VITE_BACKEND_URL}/events/${eventId}`,
+    {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${cookie.token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updates),
+    },
+  );
+
+  const result = await response.json();
+
+  if (!response.ok || !result.status) {
+    return data(
+      { error: result.error?.message || "Failed to update event." },
+      { status: response.status },
+    );
+  }
+
+  return data({ success: true });
 }
 
 export default function ViewSingleOrderPage({
@@ -94,7 +164,7 @@ export default function ViewSingleOrderPage({
 }: Route.ComponentProps) {
   return (
     <main>
-      <SingleEventOrder event={loaderData.event} />
+      <SingleEventOrder event={loaderData.event} role={loaderData.role} />
     </main>
   );
 }

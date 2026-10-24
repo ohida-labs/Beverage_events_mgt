@@ -50,6 +50,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 
   return {
     events: result.data.events ?? [],
+    role: result.data.role,
   };
 }
 
@@ -64,13 +65,20 @@ type EventItem = {
 
 export default function OrdersPage({ loaderData }: Route.ComponentProps) {
   const events = loaderData.events as EventItem[];
+  const role = loaderData.role as string;
+  const isManager = role === "admin" || role === "booking_manager";
 
   return (
     <main className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">My Events</h1>
+        <h1 className="text-2xl font-semibold">
+          {isManager ? "All Events" : "My Events"}
+        </h1>
+
         <p className="text-sm text-gray-500">
-          View and track your event requests.
+          {isManager
+            ? "Review and manage customer event requests."
+            : "View and track your event requests."}
         </p>
       </div>
 
@@ -78,14 +86,19 @@ export default function OrdersPage({ loaderData }: Route.ComponentProps) {
         <section className="card space-y-3">
           <h2 className="font-medium">No events yet</h2>
           <p className="text-sm text-gray-500">
-            Your event requests will appear here after you create one.
+            {isManager
+              ? "Customer event requests will appear here."
+              : "Your event requests will appear here after you create one."}
           </p>
-          <a
-            href="/dashboard/orders/single_order/create_order"
-            className="submit_button inline-block"
-          >
-            Create an event
-          </a>
+
+          {!isManager && (
+            <Link
+              to="/dashboard/orders/single_order/create_order"
+              className="submit_button inline-block"
+            >
+              Create an event
+            </Link>
+          )}
         </section>
       ) : (
         <div className="space-y-4">

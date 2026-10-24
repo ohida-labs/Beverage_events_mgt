@@ -9,8 +9,10 @@ import {
   GetEventDetailService,
   GetUserEventDetailService,
   UpdateEventDetailsService,
+  UpdateManagedEventService,
 } from "./events.service";
 import AuthError from "@/utils/exceptions/AuthError";
+import NotFoundError from "@/utils/exceptions/NotFound";
 
 // /events/:eventId?user_id=addsdad =GET
 export const getEventController = asyncHandler(
@@ -22,7 +24,7 @@ export const getEventController = asyncHandler(
     };
 
     //User_id
-    const { user_id } = req.query;
+    const { user_id } = req.query as { user_id: string };
 
     const userData = await GetUserDetails(userId);
 
@@ -31,7 +33,7 @@ export const getEventController = asyncHandler(
       const event = await GetUserEventDetailService({ userId, eventId });
       res.json({
         status: true,
-        data: event,
+        data: { event, role: userData.role },
       });
       return;
     }
@@ -42,10 +44,14 @@ export const getEventController = asyncHandler(
       user_id &&
       userData.user_id !== user_id
     ) {
-      const event = await GetEventDetailService({ userId, eventId });
+      const event = await GetEventDetailService({
+        userId,
+        customer_id: user_id,
+        eventId,
+      });
       res.json({
         status: true,
-        data: event,
+        data: { event, role: userData.role },
       });
       return;
     }
@@ -74,17 +80,17 @@ export const getAllEventsController = asyncHandler(
       });
       res.json({
         status: true,
-        data: events,
+        data: { events, role: userData?.role },
       });
       return;
     }
 
     //For an administrator;
     if (userData.role !== "consumer" && userData) {
-      const event = await GetAllEventsService({ filter: filter || null });
+      const events = await GetAllEventsService({ filter: filter || null });
       res.json({
         status: true,
-        data: event,
+        data: { events, role: userData?.role },
       });
       return;
     }
@@ -94,7 +100,7 @@ export const getAllEventsController = asyncHandler(
 );
 
 // /events/:eventId?user_id=addsdad =PATCH
-export const UpdateEventController = asyncHandler(
+/*export const UpdateEventController = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const updates: IUpdateEvent = req.body;
     const userId = req.userId;
@@ -126,12 +132,60 @@ export const UpdateEventController = asyncHandler(
         userId,
         eventId,
         data: updates,
-        permissions: ["state", "handle_by"],
+        permissions: ["status", "handled_by"],
       });
       res.json({ status: true, data: update_event });
       return;
     }
     next();
+  },
+);*/
+
+export const UpdateEventController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const userId = req.userId;
+    const eventId = req.params.event_id as string;
+    const updates = req.body;
+
+    if (!userId) {
+      throw new AuthError("Authentication required.");
+    }
+
+    if (!eventId) {
+      throw new Error("Event ID is required.");
+    }
+
+    if (!updates || Object.keys(updates).length === 0) {
+      throw new Error("No updates provided.");
+    }
+
+    const user = await GetUserDetails(userId);
+
+    if (!user) {
+      throw new NotFoundError("User not found.");
+    }
+
+    let result: { event?: any; event_id?: string } = {};
+
+    if (user.role === "consumer") {
+      result = await UpdateEventDetailsService({
+        userId,
+        eventId,
+        data: updates,
+      });
+    } else if (user.role === "admin" || user.role === "booking_manager") {
+      result = await UpdateManagedEventService({
+        eventId,
+        data: updates,
+      });
+    } else {
+      throw new AuthError("You do not have permission to update events.");
+    }
+
+    res.status(200).json({
+      status: true,
+      data: result,
+    });
   },
 );
 

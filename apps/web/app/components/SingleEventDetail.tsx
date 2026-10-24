@@ -16,7 +16,7 @@ type EventOrder = {
   drinks?: Drink[];
 };
 */
-
+import { useFetcher } from "react-router";
 type Drink = {
   drink_id: string;
   name: string;
@@ -36,12 +36,20 @@ type EventOrder = {
   drinks: Drink[];
 };
 
-export default function EventPage({ event }: { event: EventOrder }) {
-  console.log(event);
+export default function EventPage({
+  event,
+  role,
+}: {
+  event: EventOrder;
+  role: string;
+}) {
+  const fetcher = useFetcher();
+  const isManager = role === "admin" || role === "booking_manager";
+
   return (
     <main className="mx-auto max-w-5xl space-y-6 p-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center  justify-between">
         <div>
           <p className="text-lg text-gray-500">Event Detail</p>
           <h1 className="text-2xl font-semibold">{event.event_name}</h1>
@@ -49,9 +57,67 @@ export default function EventPage({ event }: { event: EventOrder }) {
         <StatusBadge state={event.status} />
       </div>
 
+      {isManager && (
+        <div className="mt-6 space-y-4 border-t pt-5">
+          <h3 className="font-semibold">Manage event</h3>
+
+          {event.status === "pending" && (
+            <>
+              <fetcher.Form method="post">
+                <input type="hidden" name="action" value="approve" />
+                <button className="submit_button w-full" type="submit">
+                  Approve event
+                </button>
+              </fetcher.Form>
+
+              <fetcher.Form method="post" className="space-y-2">
+                <input type="hidden" name="action" value="reject" />
+                <textarea
+                  name="rejection_reason"
+                  required
+                  placeholder="Reason for rejection"
+                  className="w-full rounded-lg border p-3"
+                />
+                <button
+                  type="submit"
+                  className="w-full rounded-lg bg-red-600 px-4 py-2 text-white"
+                >
+                  Reject event
+                </button>
+              </fetcher.Form>
+            </>
+          )}
+
+          {["approved", "assigned"].includes(event.status) && (
+            <fetcher.Form method="post" className="space-y-2">
+              <input type="hidden" name="action" value="assign" />
+              <input
+                name="handled_by"
+                required
+                placeholder="Distribution staff user ID"
+                className="w-full rounded-lg border p-3"
+              />
+              <button type="submit" className="submit_button w-full">
+                Assign distribution staff
+              </button>
+            </fetcher.Form>
+          )}
+
+          {fetcher.data?.error && (
+            <p className="text-sm text-red-600">{fetcher.data.error}</p>
+          )}
+
+          {fetcher.data?.success && (
+            <p className="text-sm text-green-700">
+              Event updated successfully.
+            </p>
+          )}
+        </div>
+      )}
+
       <div className="grid gap-6 md:grid-cols-2">
         {/* Event Card */}
-        <section className="rounded-2xl border card p-6 shadow-sm">
+        <section className="rounded-2xl max-h-fit border card p-6 shadow-sm">
           <h2 className="mb-5 text-lg font-semibold">Event details</h2>
 
           <div className="space-y-5">
@@ -84,6 +150,13 @@ export default function EventPage({ event }: { event: EventOrder }) {
                 <p className="font-medium capitalize">{event.status}</p>
               </div>
             </div>
+
+            {event.status === "rejected" && event.rejection_reason && (
+              <div className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">
+                <p className="font-semibold">Rejection reason</p>
+                <p>{event.rejection_reason}</p>
+              </div>
+            )}
           </div>
         </section>
 
@@ -92,7 +165,7 @@ export default function EventPage({ event }: { event: EventOrder }) {
           <div className="mb-5 flex items-center justify-between">
             <h2 className="text-lg font-semibold">Drinks</h2>
             <span className="text-sm text-gray-500">
-              {event.drinks.length} items
+              {event?.drinks && event?.drinks.length} items
             </span>
           </div>
 

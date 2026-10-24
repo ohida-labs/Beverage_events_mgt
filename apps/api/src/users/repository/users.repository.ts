@@ -52,7 +52,7 @@ export const CreateUser = async (user_arg: {
   email: string;
   password: string;
 }) => {
-  console.log(user_arg, "dbbbbb");
+  //console.log(user_arg, "dbbbbb");
   try {
     const query = {
       text: `

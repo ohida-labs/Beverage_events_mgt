@@ -3,6 +3,7 @@ import { DbUpdateHelper } from "@/utils/database/updateHelper";
 import { handlePgError } from "@/utils/exceptions/dbError";
 import ValidationError from "@/utils/exceptions/validationError";
 
+//A
 export const CreateNewEvent = async (
   userId: string,
   event_arg: ICreateEvent,
@@ -115,6 +116,51 @@ export const CreateNewEvent = async (
   } finally {
     client.release();
   }
+};
+
+//a
+
+export const UpdateManagedEvent = async (
+  event_id: string,
+  updates: IManagedEventUpdate,
+) => {
+  const allowedFields = ["status", "handled_by", "rejection_reason"];
+
+  const fields = Object.keys(updates).filter((key) =>
+    allowedFields.includes(key),
+  );
+
+  if (fields.length === 0) {
+    throw new Error("No valid event updates provided.");
+  }
+
+  const values = fields.map(
+    (field) => updates[field as keyof IManagedEventUpdate],
+  );
+
+  const setClause = fields
+    .map((field, index) => `"${field}" = $${index + 1}`)
+    .join(", ");
+
+  values.push(event_id);
+  const query = {
+    text: `
+      UPDATE events
+      SET ${setClause}
+      WHERE event_id = $${values.length}
+      RETURNING event_id, event_name, status, handled_by, rejection_reason;
+    `,
+    values,
+  };
+
+  const result = await pool.query(query);
+
+  console.log(result.rows);
+  if (result.rowCount === 0) {
+    return null;
+  }
+
+  return result.rows[0];
 };
 
 export const GetEvent = async (user_id: string, event_id: string) => {
@@ -280,29 +326,39 @@ export const GetEventWithUser = async (user_id: string, event_id: string) => {
 
 ////IFiltereventsUser
 export const GetAllEventsWithUser = async (arg: { filter: IFilterEvents }) => {
+  console.log(arg.filter);
   try {
     const query = `
-    select e.*,
-    COUNT(e.id) OVER () as total_count,
-    u.first_name as first_name,    
-    u.email as email,
-    u.profile as profile,
-    u.user_id as userId,
-    from events e 
-    left join users u 
-    on e.customer_id = u.user_id
-    where (e.name ILIKE  c OR u.email ILIKE $1 || '%')
-    offset $3
-    limit $4
-    `;
-    //"""order by ${/*OrderBy*/} ${/*direction*/}"""
+  SELECT
+    e.*,
+    COUNT(e.event_id) OVER () AS total_count,
+    u.first_name AS first_name,
+    u.email AS email,
+    u.user_id AS user_id
+  FROM events e
+  LEFT JOIN users u
+    ON e.customer_id = u.user_id
+  WHERE (
+    e.event_name ILIKE $1 || '%'
+    OR u.email ILIKE $1 || '%'
+  )
+  OFFSET $2
+  LIMIT $3
+`;
 
-    const res = await pool.query(query);
+    const searchTerm = arg.filter.search;
+
+    const res = await pool.query(query, [
+      searchTerm || "",
+      arg.filter.page || 0,
+      arg.filter.limit || 50,
+    ]);
+
     if (res.rows.length === 0) {
-      return null;
+      return [];
     }
 
-    const eventslist_user = res.rows; //IeventUser
+    const eventslist_user = res.rows;
     return eventslist_user;
   } catch (e) {
     handlePgError(e);
