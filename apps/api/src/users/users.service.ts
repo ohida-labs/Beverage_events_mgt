@@ -44,7 +44,7 @@ export const UpdateUserDetails = async (
 };
 
 //inform organisation by posting on a 'action table' later!
-export const DeleteUserDetails = async (userId: string) => {
+/*export const DeleteUserDetails = async (userId: string) => {
   const user = await GetUser(userId);
   if (!user) {
     throw new NotFoundError("User not found!");
@@ -60,8 +60,29 @@ export const DeleteUserDetails = async (userId: string) => {
   });
 
   //Send notice to org;
-
   return deleted;
+};*/
+
+//Audit LogS
+
+export const DeleteUserDetails = async (userId: string) => {
+  const user = await GetUser(userId);
+
+  if (!user) {
+    throw new NotFoundError("User not found!");
+  }
+
+  if (user.is_active === false) {
+    throw new AuthError("This account is already deactivated.");
+  }
+
+  await UpdateUser(userId, { is_active: false });
+
+  return {
+    user_id: userId,
+    is_active: false,
+    message: "Account deactivated successfully.",
+  };
 };
 
 //Admin control
@@ -132,7 +153,7 @@ export const GetAllUsers = async (id: string, filter: IFilterUser) => {
       user_id: user.user_id,
       email: user.email,
       blacklist: user.blacklisted,
-      profile: user.profile,
+      profile: user.profile_image_url,
       first_name: user.first_name,
       blacklist_reason: user.blacklisted_reason,
       phone_number: user.phone_number,

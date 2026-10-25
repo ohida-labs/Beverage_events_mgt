@@ -6,6 +6,7 @@ import {
   SignupController,
   UserIsAuthorizedCheck,
 } from "./auth.controller";
+import { AuthorizationClientRequest } from "@/utils/middleware/auth";
 
 const AuthRouter = Router();
 
@@ -14,7 +15,10 @@ AuthRouter.route("/signup").post(SignupController);
 
 AuthRouter.route("/login").post(LoginController);
 
-AuthRouter.route("/password_reset").post(PasswordResetController);
+AuthRouter.route("/password_reset").post(
+  AuthorizationClientRequest,
+  PasswordResetController,
+);
 
 AuthRouter.route("/forgot_password").post(ForgotPasswordController);
 

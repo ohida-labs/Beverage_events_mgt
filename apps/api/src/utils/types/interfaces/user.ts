@@ -3,13 +3,14 @@ export interface IUser {
   email: string;
   password_hash: string;
   role: string;
-  profile: string;
+  profile_image_url?: string;
   first_name: string;
   last_name?: string;
-  //  priority: number;
   blacklisted: boolean;
   blacklisted_reason: string;
   phone_number: string;
+  is_active?: boolean;
+
   country: string;
   updated_at: Date;
   created_at: Date;
@@ -17,13 +18,15 @@ export interface IUser {
 
 export interface IUpdateUser {
   role?: string;
-  priority?: number;
-  profile?: string;
+  profile_image_url?: string;
+  country?: string;
   phone_number?: string;
   first_name?: string;
   last_name?: string;
-  avatar?: string;
   blacklisted?: boolean;
+  password_hash?: string;
+  is_active?: boolean;
+
   blacklisted_reason?: string;
 }
 

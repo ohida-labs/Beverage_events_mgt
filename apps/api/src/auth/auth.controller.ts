@@ -8,6 +8,7 @@ import {
 import { asyncHandler } from "../utils/middleware/error";
 import jwt from "jsonwebtoken";
 import AuthError from "@/utils/exceptions/AuthError";
+import ValidationError from "@/utils/exceptions/validationError";
 
 const jwtSecret = process.env.JWT_SECRET as string;
 /*Implement auth with lucia Auth! */
@@ -34,6 +35,7 @@ export const LoginController = asyncHandler(
   },
 );
 
+/*
 export const PasswordResetController = asyncHandler(
   async (req: Request, res: Response) => {
     //new_password && old_password
@@ -66,6 +68,66 @@ export const PasswordResetController = asyncHandler(
       userId,
       old_password: credientials.old_password,
       new_password: credientials.new_password,
+    });
+
+    res.json({ status: true, data: reset_response });
+  },
+);
+*/
+
+export const PasswordResetController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const credentials = req.body as {
+      old_password?: string;
+      new_password?: string;
+    };
+
+    const { reset_token, source } = req.query as {
+      reset_token?: string;
+      source?: "forgot_password" | "change_password";
+    };
+
+    const email =
+      typeof req.query.email === "string" ? req.query.email : undefined;
+
+    if (source !== "change_password" && source !== "forgot_password") {
+      throw new ValidationError({}, "Invalid password reset source.");
+    }
+
+    if (!credentials.new_password) {
+      throw new ValidationError({}, "New password is required.");
+    }
+
+    if (credentials.new_password.length < 8) {
+      throw new ValidationError({}, "Password must be at least 8 characters.");
+    }
+
+    if (source === "change_password") {
+      if (!req.userId) {
+        throw new AuthError("You must be logged in to change your password.");
+      }
+
+      if (!credentials.old_password) {
+        throw new ValidationError({}, "Current password is required.");
+      }
+
+      if (credentials.old_password === credentials.new_password) {
+        throw new ValidationError(
+          {},
+          "New password must differ from your current password.",
+        );
+      }
+    } else if (!email || !reset_token) {
+      throw new ValidationError({}, "Email and reset token are required.");
+    }
+
+    const reset_response = await PasswordResetService({
+      userId: req.userId,
+      email,
+      reset_token,
+      source,
+      old_password: credentials.old_password,
+      new_password: credentials.new_password,
     });
 
     res.json({ status: true, data: reset_response });

@@ -4,6 +4,7 @@ This file called for every authorize request by the browser or discord bot;
 import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import AuthError from "../exceptions/AuthError";
+import { GetUserDetails } from "@/users/users.service";
 
 const jwtSecret = process.env.JWT_SECRET as string;
 
@@ -21,6 +22,10 @@ export async function AuthorizationClientRequest(
     };
     //console.log(decoded);//user_id, iat, exp
     req.userId = decoded.user_id;
+    const user = await GetUserDetails(req.userId);
+    if (!user || user.is_active === false) {
+      throw new AuthError("This account is inactive or no longer available.");
+    }
     next();
   } catch (e) {
     console.log(e);

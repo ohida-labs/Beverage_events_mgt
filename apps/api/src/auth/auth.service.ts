@@ -36,12 +36,20 @@ export const LoginWithEmailAndPassword = async (arg: IAuth) => {
     //check up email on db
     const user = await GetUser(arg.email, "email");
 
-    if (!user) {
+    if (!user || !user.email) {
       throw new AuthError("Invalid Email or Password");
     }
 
+    if (user.is_active === false) {
+      throw new AuthError(
+        "This account has been deactivated. Contact an administrator.",
+      );
+    }
+
+    const isMatched = await bc.compare(arg.password, user.password_hash);
+
     //Check if email and password match with the one on db;
-    if (!user.email || !bc.compare(arg.password, user.password_hash)) {
+    if (!isMatched) {
       throw new AuthError("Invalid Email or Password");
     }
 
@@ -60,7 +68,11 @@ export const LoginWithEmailAndPassword = async (arg: IAuth) => {
     //Send back access_token
     return {
       token,
-      user: { user_id: user.user_id, role: user.role, profile: user.profile },
+      user: {
+        user_id: user.user_id,
+        role: user.role,
+        profile: user.profile_image_url,
+      },
     };
   } catch (e) {
     throw e;
@@ -102,19 +114,30 @@ export const SignupWithEmailAndPassword = async (arg: ISignup) => {
 
 export const PasswordResetService = async (arg: IResetPassword) => {
   //get email from token
-  const user = await GetUser(arg.email, "email");
+  const user =
+    arg.source === "change_password"
+      ? await GetUser(arg.userId!, "user_id")
+      : await GetUser(arg.email!, "email");
 
   //1.Email is valid!
   if (arg.source === "forgot_password" && !user && !user?.email) {
     throw new AuthError("This email is not valid");
   }
 
+  if (arg.source === "change_password" && !arg.userId) {
+    throw new AuthError("You must be logged in to change your password.");
+  }
+
   //2.compare old passwords (in db and from user)
-  if (
-    arg.source === "change_password" &&
-    user.password_hash !== arg.old_password
-  ) {
-    throw new AuthError("Your current password is not correct");
+  if (arg.source === "change_password") {
+    const passwordMatches = await bc.compare(
+      arg.old_password!,
+      user.password_hash,
+    );
+
+    if (!passwordMatches) {
+      throw new AuthError("Your current password is not correct");
+    }
   }
 
   if (arg.source === "forgot_password") {
@@ -126,10 +149,9 @@ export const PasswordResetService = async (arg: IResetPassword) => {
     }
 
     //15mins
-    if (!resetToken.expires_at || resetToken.expires_at > new Date()) {
+    if (!resetToken.expires_at || resetToken.expires_at <= new Date()) {
       throw new AuthError("Token has expired!");
     }
-
     //Validate validity
     if (!resetToken.token || resetToken.token !== arg.reset_token) {
       throw new AuthError("Token is invalid!");
@@ -149,7 +171,7 @@ export const PasswordResetService = async (arg: IResetPassword) => {
 
   //Upload to db;
   const updateuser = await UpdateUser(user.user_id, {
-    password: changepassword,
+    password_hash: changepassword,
   });
 
   //User should be redirected to /login
