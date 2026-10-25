@@ -84,13 +84,13 @@ export const CreateUser = async (user_arg: {
 //Change user_id to null if user deletes their account
 //Admin: change user: 'blacklisted, role, priority, reason'
 export const UpdateUser = async (id: string, data: UpdateUserWithPassword) => {
-  const { setClause, values } = DbUpdateHelper({ updates: data });
+  const { setClause, values } = DbUpdateHelper({ updates: data, id });
 
   try {
     let query_text = `
           UPDATE users
           SET ${setClause} 
-          WHERE user_id = $${id} 
+          WHERE user_id = $${values.length} 
           RETURNING user_id;         
           `;
 
@@ -98,6 +98,7 @@ export const UpdateUser = async (id: string, data: UpdateUserWithPassword) => {
       text: query_text,
       values,
     };
+    console.log(query);
     const res = await pool.query(query);
 
     if (res.rows.length === 0) {

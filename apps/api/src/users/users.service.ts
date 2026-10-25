@@ -20,6 +20,7 @@ export const GetUserDetails = async (userId: string) => {
 
   return user;
 };
+
 export const UpdateUserDetails = async (
   userId: string,
   data: IUpdateUser,

@@ -1,4 +1,11 @@
-import { useLoaderData, Link, Form, useSearchParams } from "react-router";
+import {
+  useLoaderData,
+  Link,
+  Form,
+  useSearchParams,
+  data,
+  useFetcher,
+} from "react-router";
 import { user_cookie_token } from "../../../cookies.server";
 import type { Route } from "./+types/all_users";
 
@@ -64,9 +71,92 @@ export async function loader({ request }: Route.LoaderArgs) {
   };
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
+export async function action({ request }: Route.ActionArgs) {
+  const cookieHeader = request.headers.get("Cookie");
+  const cookie = (await user_cookie_token.parse(cookieHeader)) || {};
+
+  if (!cookie.token) {
+    throw new Response("Unauthorized", { status: 401 });
+  }
+
+  const formData = await request.formData();
+  const userId = String(formData.get("user_id") || "");
+  const intent = String(formData.get("intent") || "");
+
+  if (!userId) {
+    return data({ error: "User ID is required." }, { status: 400 });
+  }
+
+  let updates: Record<string, string | boolean>;
+
+  if (intent === "change_role") {
+    const role = String(formData.get("role") || "");
+
+    if (
+      role !== "admin" &&
+      role !== "booking_manager" &&
+      role !== "distribution_staff" &&
+      role !== "consumer"
+    ) {
+      return data({ error: "Invalid role." }, { status: 400 });
+    }
+
+    updates = { role };
+  } else if (intent === "blacklist") {
+    const reason = String(formData.get("blacklisted_reason") || "").trim();
+
+    if (!reason) {
+      return data(
+        { error: "Enter a reason for blacklisting this user." },
+        { status: 400 },
+      );
+    }
+
+    updates = {
+      blacklisted: true,
+      blacklisted_reason: reason,
+    };
+  } else if (intent === "unblacklist") {
+    updates = {
+      blacklisted: false,
+      blacklisted_reason: "",
+    };
+  } else {
+    return data({ error: "Invalid action." }, { status: 400 });
+  }
+
+  const response = await fetch(
+    `${import.meta.env.VITE_BACKEND_URL}/user?user_id=${encodeURIComponent(userId)}`,
+    {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${cookie.token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updates),
+    },
+  );
+
+  const result = await response.json();
+
+  if (!response.ok || !result.status) {
+    return data(
+      {
+        error: result.error?.message || "Failed to update user.",
+      },
+      { status: response.status || 400 },
+    );
+  }
+
+  return data({ success: "User updated successfully." });
+}
+
 export default function AdminUsers() {
   const { users, page, limit } = useLoaderData<typeof loader>() as LoaderData;
+  const fetcher = useFetcher<typeof action>();
   const [searchParams] = useSearchParams();
+
   const search = searchParams.get("search") || "";
   return (
     <main className="space-y-6 p-6">
@@ -105,6 +195,20 @@ export default function AdminUsers() {
                 Search
               </button>
             </Form>
+
+            {/*aCTION fEEDBACK */}
+            {fetcher.data && "error" in fetcher.data && (
+              <p className="text-sm text-red-600" role="alert">
+                {fetcher.data.error}
+              </p>
+            )}
+
+            {fetcher.data && "success" in fetcher.data && (
+              <p className="text-sm text-green-700" role="status">
+                {fetcher.data.success}
+              </p>
+            )}
+
             <table className="w-full text-left text-sm">
               <thead className="bg-gray-50 text-gray-500">
                 <tr>
@@ -112,6 +216,7 @@ export default function AdminUsers() {
                   <th className="px-5 py-3 font-medium">Role</th>
                   <th className="px-5 py-3 font-medium">Status</th>
                   <th className="px-5 py-3 font-medium">Date joined</th>
+                  <th className="px-5 py-3 font-medium">Actions</th>
                 </tr>
               </thead>
 
@@ -145,6 +250,14 @@ export default function AdminUsers() {
 
                     <td className="whitespace-nowrap px-5 py-4 text-gray-500">
                       {new Date(user.created).toLocaleDateString()}
+                    </td>
+                    <td className="px-5 py-4">
+                      <Link
+                        to={`/admin/users/${user.user_id}`}
+                        className="font-medium text-green-700 hover:text-green-800"
+                      >
+                        View
+                      </Link>
                     </td>
                   </tr>
                 ))}

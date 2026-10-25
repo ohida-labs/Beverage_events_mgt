@@ -10,8 +10,10 @@ import {
 import { IFilterUser, IUpdateUser } from "@/utils/types/interfaces/user";
 import ValidationError from "@/utils/exceptions/validationError";
 import { UpdateUser } from "./repository/users.repository";
+import AuthError from "@/utils/exceptions/AuthError";
 
 /* Users actions */
+/*
 export const getUserController = asyncHandler(
   async (req: Request, res: Response) => {
     //Actual user request
@@ -60,9 +62,65 @@ export const getUserController = asyncHandler(
     });
   },
 );
+*/
+
+export const getUserController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const userId = req.userId;
+    const targetUserId = req.query.user_id as string | undefined;
+
+    const currentUser = await GetUserDetails(userId);
+
+    if (targetUserId && targetUserId !== userId) {
+      if (currentUser.role !== "admin") {
+        throw new AuthError(
+          "Only administrators can view other users' details.",
+        );
+      }
+
+      const user = await GetUserDetails(targetUserId);
+
+      res.json({
+        status: true,
+        data: {
+          user: {
+            user_id: user.user_id,
+            email: user.email,
+            first_name: user.first_name,
+            role: user.role,
+            blacklist: user.blacklisted,
+            blacklist_reason: user.blacklisted_reason,
+            phone_number: user.phone_number,
+            profile: user.profile,
+            created: user.created_at,
+          },
+        },
+      });
+
+      return;
+    }
+
+    res.json({
+      status: true,
+      data: {
+        user: {
+          user_id: currentUser.user_id,
+          email: currentUser.email,
+          first_name: currentUser.first_name,
+          role: currentUser.role,
+          blacklist: currentUser.blacklisted,
+          blacklist_reason: currentUser.blacklisted_reason,
+          phone_number: currentUser.phone_number,
+          profile: currentUser.profile,
+          created: currentUser.created_at,
+        },
+      },
+    });
+  },
+);
 
 //update user
-export const UpdateUserController = asyncHandler(
+/*export const UpdateUserController = asyncHandler(
   async (req: Request, res: Response) => {
     const updates: IUpdateUser = req.body;
     const userId = req.userId;
@@ -79,7 +137,6 @@ export const UpdateUserController = asyncHandler(
     if (userData.role !== "default" && userData.user_id !== user_id) {
       const update_user = await UpdateUserDetails(user_id as string, updates, [
         "role",
-        "priority",
         "blacklist",
         "blacklist_reason",
       ]);
@@ -89,6 +146,53 @@ export const UpdateUserController = asyncHandler(
 
     const update_user = await UpdateUserDetails(userId, updates);
     res.json({ status: true, data: update_user });
+  },
+);
+*/
+
+export const UpdateUserController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const updates: IUpdateUser = req.body;
+    const userId = req.userId;
+    const targetUserId = req.query.user_id as string | undefined;
+
+    if (!updates || Object.keys(updates).length === 0) {
+      throw new ValidationError({}, "There is nothing to update!");
+    }
+
+    const userData = await GetUserDetails(userId);
+
+    // Admin updating another user's account
+    if (targetUserId && targetUserId !== userId) {
+      if (userData.role !== "admin") {
+        throw new AuthError("Only administrators can update other users.");
+      }
+
+      const updatedUser = await UpdateUserDetails(targetUserId, updates, [
+        "role",
+        "blacklisted",
+        "blacklisted_reason",
+      ]);
+
+      res.json({ status: true, data: updatedUser });
+
+      return;
+    }
+
+    // Users updating their own permitted profile fields
+    if (
+      updates.role !== undefined ||
+      updates.blacklisted !== undefined ||
+      updates.blacklisted_reason !== undefined
+    ) {
+      throw new AuthError(
+        "You cannot change your own role or blacklist status.",
+      );
+    }
+
+    const updatedUser = await UpdateUserDetails(userId, updates);
+
+    res.json({ status: true, data: updatedUser });
   },
 );
 

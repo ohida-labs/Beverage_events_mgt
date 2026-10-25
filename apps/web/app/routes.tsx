@@ -53,6 +53,7 @@ export default [
 
       //all users
       route("users", "./pages/admin/users/all_users.tsx"),
+      route("users/:user_id", "./pages/admin/users/user_details.tsx"),
     ]),
   ]),
   /*
