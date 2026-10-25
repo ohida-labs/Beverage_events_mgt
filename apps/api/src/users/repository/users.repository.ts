@@ -98,7 +98,6 @@ export const UpdateUser = async (id: string, data: UpdateUserWithPassword) => {
       text: query_text,
       values,
     };
-    console.log(query);
     const res = await pool.query(query);
 
     if (res.rows.length === 0) {

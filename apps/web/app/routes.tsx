@@ -54,6 +54,13 @@ export default [
       //all users
       route("users", "./pages/admin/users/all_users.tsx"),
       route("users/:user_id", "./pages/admin/users/user_details.tsx"),
+
+      //all drinks
+      route("beverages", "./pages/admin/beverages/all_beverages.tsx"),
+      route(
+        "beverages/:drink_id",
+        "./pages/admin/beverages/beverage_details.tsx",
+      ),
     ]),
   ]),
   /*
