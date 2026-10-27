@@ -1,7 +1,7 @@
-import SingleEventOrder from "../../../../components/SingleEventDetail";
-import { user_cookie_token } from "../../../../cookies.server";
+import SingleEventOrder from "../../components/SingleEventDetail";
+import { user_cookie_token } from "../../cookies.server";
 //import { GetSingleUserEventOrder } from "../../../../lib/events.server";
-import type { Route } from "./+types/view_order";
+import type { Route } from "./+types/single_event";
 import { data } from "react-router";
 
 //View Order Detail!

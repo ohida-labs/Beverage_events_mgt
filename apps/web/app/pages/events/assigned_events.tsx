@@ -1,6 +1,6 @@
 import { data, useFetcher } from "react-router";
-import type { Route } from "./+types/distribution_events";
-import { user_cookie_token } from "../../../cookies.server";
+import type { Route } from "./+types/assigned_events";
+import { user_cookie_token } from "../../cookies.server";
 
 type EventItem = {
   event_id: string;
@@ -145,7 +145,7 @@ export default function DistributionEventsPage({
 
               <div className="flex flex-wrap gap-3">
                 <a
-                  href={`/dashboard/events/${event.event_id}`}
+                  href={`/events/${event.event_id}`}
                   className="submit_button inline-block"
                 >
                   View event details

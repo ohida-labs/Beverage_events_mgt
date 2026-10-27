@@ -4,6 +4,7 @@ import SignOutButton from "../components/SignOut";
 import { user_cookie_token } from "../cookies.server";
 import { redirect } from "react-router";
 
+//Load all beverages HERE!
 export async function loader({ request }: Route.LoaderArgs) {
   const cookieHeader = request.headers.get("Cookie");
   const cookie = (await user_cookie_token.parse(cookieHeader)) || {};
@@ -33,6 +34,8 @@ export default function Landingpage({ loaderData }: Route.ComponentProps) {
       ) : (
         <p>Not authenticated yet!</p>
       )}
+
+      <p>This is guiness booking consumer platform!</p>
     </div>
   );
 }

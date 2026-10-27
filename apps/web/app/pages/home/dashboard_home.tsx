@@ -1,15 +1,14 @@
-import { user_cookie_token } from "../../cookies.server";
+/*import { user_cookie_token } from "../../cookies.server";
 import { data } from "react-router";
 import type { Route } from "./+types/dashboard_home";
 import LastestActiveOrder from "../../components/LatestActiveOrder";
 import DraftsOrderList from "../../components/DraftOrders";
 import { AuthUserContext } from "../../context";
+*/
 //import { GetDraftedEventOrders } from "../../lib/events.server";
 //import { GetLatestPendingEventOrder } from "../../lib/events.server";
 
-/* eslint-disable react-refresh/only-export-components */
-
-export async function loader({ request, context }: Route.LoaderArgs) {
+/*export async function loader({ request, context }: Route.LoaderArgs) {
   const cookieHeader = request.headers.get("Cookie");
   const cookie = (await user_cookie_token.parse(cookieHeader)) || {};
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -83,12 +82,13 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   });
   //return data({ event, user, ,  });
 }
-
-export default function DashboardHomeView({
+*/
+/*{
   loaderData,
-}: Route.ComponentProps) {
+}: Route.ComponentProps */
+export default function DashboardHomeView() {
   //const { user, active_event, draft_events }  = loaderData;
-  const { active_event, draft_events } = loaderData;
+  //const { active_event, draft_events } = loaderData;
 
   /*
   if (user?.error) {
@@ -109,8 +109,10 @@ export default function DashboardHomeView({
           Place an Order
         </button>
       </div>
+      {/*
       <LastestActiveOrder event={active_event} />
       <DraftsOrderList events={draft_events} />
+     */}
     </main>
   );
 }

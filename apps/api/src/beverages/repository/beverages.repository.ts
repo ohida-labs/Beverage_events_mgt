@@ -185,13 +185,15 @@ export const GetBeverageById = async (drinkId: string) => {
     const result = await pool.query(
       `
         SELECT
-          drink_id,
-          name,
-          image_url,
-          price_minor_units,
-          is_available,
-          created_by
-        FROM beverage_items
+          b.drink_id,
+          b.name,
+          b.image_url,
+          b.price_minor_units,
+          b.is_available,
+          u.first_name as created_by
+        FROM beverage_items b
+        join users u
+        on u.user_id = b.created_by
         WHERE drink_id = $1
       `,
       [drinkId],

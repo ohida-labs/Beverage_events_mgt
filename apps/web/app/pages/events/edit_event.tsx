@@ -1,6 +1,6 @@
 //Create Order Detail!
-import EventForm from "../../../../components/EventForm";
-import type { Route } from "./+types/edit_order";
+//import EventForm from "../../components/EventForm";
+import type { Route } from "./+types/edit_event";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export async function action({ request }: Route.ActionArgs) {
@@ -17,7 +17,8 @@ export default function EditEventOrderPage() {
       <h3 className="text-h font-medium text-2xl text-center">
         Edit Event Page
       </h3>
-      <EventForm />
+      <p>Coming Soon</p>
+      {/*<EventForm drinks={null}/>*/}
     </main>
   );
 }

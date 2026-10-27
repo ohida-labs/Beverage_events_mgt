@@ -1,8 +1,8 @@
 //Create Order Detail!
 import { redirect, data } from "react-router";
-import type { Route } from "./+types/create_order";
-import { user_cookie_token } from "../../../../cookies.server";
-import EventForm from "../../../../components/EventForm";
+import type { Route } from "./+types/create_event";
+import { user_cookie_token } from "../../cookies.server";
+import EventForm from "../../components/EventForm";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export async function loader() {

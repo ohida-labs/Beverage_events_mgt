@@ -1,8 +1,8 @@
-import ChangeUserPassword from "../../../components/ChangePassword";
-import DeactivateUserAccount from "../../../components/DeactivateAccount";
-import EditProfile from "../../../components/EditProfile";
-import SupportInformation from "../../../components/SuportInformation";
-import { user_cookie_token } from "../../../cookies.server";
+import ChangeUserPassword from "../../components/ChangePassword";
+import DeactivateUserAccount from "../../components/DeactivateAccount";
+import EditProfile from "../../components/EditProfile";
+import SupportInformation from "../../components/SuportInformation";
+import { user_cookie_token } from "../../cookies.server";
 import type { Route } from "./+types/settings_page";
 import { data, useActionData, useLoaderData } from "react-router";
 async function getToken(request: Request) {

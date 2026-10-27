@@ -37,8 +37,9 @@ export const AdminUserMiddleware: Route.MiddlewareFunction = async function (
   }
 
   if (res.data.role === "consumer") {
-    return redirect(`/dashboard`);
+    return redirect(`/home`);
   }
+
   //Save the user context
   context.set(AuthUserContext, res.data);
 

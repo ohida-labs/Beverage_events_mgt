@@ -1,7 +1,7 @@
 import { redirect } from "react-router";
 import { AuthUserContext } from "../context";
 import { user_cookie_token } from "../cookies.server";
-import type { Route } from "../pages/dashboard/+types/dashboard_layout";
+import type { Route } from "../pages/events/+types/all_events";
 
 export const DefaultUserMiddleware: Route.MiddlewareFunction = async function (
   { request, context },
@@ -33,13 +33,12 @@ export const DefaultUserMiddleware: Route.MiddlewareFunction = async function (
 
   //Invalid Token
   if (!res.status) {
-    throw redirect(`/login?reason=${res?.error?.message}`);
+    throw redirect(`/login?reason=${res?.error?.message.trim()}`);
   }
 
-  /*
-  if (res.data.role === "admin" || res.data.role === "super_admin") {
-    return redirect(`/admin`);
-  }*/
+  if (res.data.role === "distributor") {
+    return redirect(`/assigned_events`);
+  }
 
   //Save the user context
   context.set(AuthUserContext, res.data);

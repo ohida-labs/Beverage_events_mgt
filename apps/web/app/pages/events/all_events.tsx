@@ -1,24 +1,13 @@
 //import OrderListDisplay from "../../../components/EventOrderListDisplay";
 //import { useLoaderData } from "react-router";
-import type { Route } from "./+types/orders_list";
-import { user_cookie_token } from "../../../cookies.server";
+import { user_cookie_token } from "../../cookies.server";
 import { data, Link } from "react-router";
+import type { Route } from "./+types/all_events";
+
 //import { GetUserEventOrders } from "../../../lib/events.server";
 //import TotalPagination from "../../../components/PaginateComponent";
 //import SearchInput from "../../../ui/SearchInput";
 //import { SelectForm } from "../../../ui/select";
-
-/*export async function loader({ request }: Route.LoaderArgs) {
-  const cookieHeader = request.headers.get("Cookie");
-  const cookie = (await user_cookie_token.parse(cookieHeader)) || {};
-  const token = cookie?.token;
-  
-  //run http request
-  const events = await GetUserEventOrders(token);
-
-  return { events };
-  }
-  */
 
 // eslint-disable-next-line react-refresh/only-export-components
 export async function loader({ request }: Route.LoaderArgs) {
@@ -63,12 +52,11 @@ type EventItem = {
   status: string;
 };
 
-export default function OrdersPage({ loaderData }: Route.ComponentProps) {
+export default function EventsPage({ loaderData }: Route.ComponentProps) {
   const events = loaderData.events as EventItem[];
   const role = loaderData.role as string;
   const isManager = role === "admin" || role === "booking_manager";
 
-  console.log(events);
   return (
     <main className="space-y-6">
       <div>

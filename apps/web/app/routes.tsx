@@ -17,35 +17,31 @@ export default [
     route("forgot_password", "./pages/auth/forgot_password.tsx"),
   ]),
 
-  //Dashboard
-  ...prefix("dashboard", [
-    layout("./pages/dashboard/dashboard_layout.tsx", [
-      index("./pages/dashboard/dashboard_home.tsx"),
-
-      route(
-        "distribution",
-        "./pages/dashboard/distribution/distribution_events.tsx",
-      ),
-
-      //ORDERS
-      route("events", "./pages/dashboard/orders/order_root.tsx", [
-        index("./pages/dashboard/orders/orders_list.tsx"),
-        route("new", "./pages/dashboard/orders/single_order/create_order.tsx"),
-        route(
-          ":event_id",
-          "./pages/dashboard/orders/single_order/view_order.tsx",
-        ),
-        route(
-          ":event_id/edit",
-          "./pages/dashboard/orders/single_order/edit_order.tsx",
-        ),
-      ]),
-
-      //Setting
-      route("settings", "./pages/dashboard/settings/settings_page.tsx"),
+  //Events Listings (ALL uSERS)
+  ...prefix("events", [
+    layout("./pages/events/events_root.tsx", [
+      // Consumers, Booking manager, admin
+      index("./pages/events/all_events.tsx"),
+      route("new", "./pages/events/create_event.tsx"),
+      route(":event_id", "./pages/events/single_event.tsx"),
+      route(":event_id/edit", "./pages/events/edit_event.tsx"),
     ]),
   ]),
 
+  // Distributor ONLY
+  route("assigned_events", "./pages/events/assigned_events.tsx"),
+
+  //Settings For (all Users)
+  route("settings", "./pages/settings/settings_page.tsx"),
+
+  //HOme: Stat and Quick Links (Consumers Only)
+  ...prefix("home", [
+    layout("./pages/home/dashboard_layout.tsx", [
+      index("./pages/home/dashboard_home.tsx"),
+    ]),
+  ]),
+
+  //Administrative only
   ...prefix("admin", [
     layout("./pages/admin/layout.tsx", [
       //home
@@ -63,36 +59,4 @@ export default [
       ),
     ]),
   ]),
-  /*
-
-  
-*/
-
-  //]),
-
-  /*
-  ...prefix("admin", [
-    layout("./pages/admin/layout.tsx", [
-      //home
-      index("./pages/admin/home.tsx"),
-
-      //cUSTOMERS
-      route("customers", "", [
-        route(":customer_id", ""),
-        route(":customer_id/edit", ""),
-      ]),
-
-      //ORDERS
-      route("orders", "", [
-        route(":order_id", ""),
-        route(":order_id/edit", ""),
-      ]),
-
-      //Setting
-      route("settings", ""),
-
-      //Roles and permission
-      route("manage_users", ""),
-    ]),
-    */
 ] satisfies RouteConfig;
