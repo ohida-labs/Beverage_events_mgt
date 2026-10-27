@@ -68,6 +68,7 @@ export default function OrdersPage({ loaderData }: Route.ComponentProps) {
   const role = loaderData.role as string;
   const isManager = role === "admin" || role === "booking_manager";
 
+  console.log(events);
   return (
     <main className="space-y-6">
       <div>

@@ -2,6 +2,13 @@ import pool from "@/utils/database";
 import { DbUpdateHelper } from "@/utils/database/updateHelper";
 import { handlePgError } from "@/utils/exceptions/dbError";
 import ValidationError from "@/utils/exceptions/validationError";
+import {
+  ICreateEvent,
+  IManagedEventUpdate,
+  IEvent,
+  IFilterEvents,
+  IUpdateEvent,
+} from "@/utils/types/interfaces/event";
 
 //A
 export const CreateNewEvent = async (

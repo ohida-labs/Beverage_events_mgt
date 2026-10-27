@@ -36,7 +36,7 @@ export const AdminUserMiddleware: Route.MiddlewareFunction = async function (
     throw redirect(`/login?reason=${res?.error?.message}`);
   }
 
-  if (res.data.role === "default") {
+  if (res.data.role === "consumer") {
     return redirect(`/dashboard`);
   }
   //Save the user context

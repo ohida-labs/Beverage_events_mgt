@@ -15,6 +15,7 @@ import {
 } from "./events.service";
 import AuthError from "@/utils/exceptions/AuthError";
 import NotFoundError from "@/utils/exceptions/NotFound";
+import { ICreateEvent, IFilterEvents } from "@/utils/types/interfaces/event.js";
 
 // /events/:eventId?user_id=addsdad =GET
 export const getEventController = asyncHandler(

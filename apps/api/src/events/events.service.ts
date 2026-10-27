@@ -11,6 +11,12 @@ import {
 } from "./repository/events.repository";
 import { GetUser } from "@/users/repository/users.repository";
 import EventError from "@/utils/exceptions/EventError";
+import {
+  ICreateEvent,
+  IFilterEvents,
+  IManagedEventUpdate,
+  IUpdateEvent,
+} from "@/utils/types/interfaces/event";
 
 //get user events
 export const GetUserEventDetailService = async (arg: {
@@ -23,7 +29,7 @@ export const GetUserEventDetailService = async (arg: {
     throw new NotFoundError("Event not Found!");
   }
 
-  return { event };
+  return event;
 };
 
 export const GetAllUserEventsService = async (arg: {
@@ -31,7 +37,7 @@ export const GetAllUserEventsService = async (arg: {
   filter?: IFilterEvents | null;
 }) => {
   const events = await GetAllEvents(arg.userId, arg.filter);
-  return { events };
+  return events;
 };
 
 export const CreateNewEventService = async (

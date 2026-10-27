@@ -1,4 +1,4 @@
-interface IEvent {
+export interface IEvent {
   event_id: string;
   user_id: string;
   event_name: string;
@@ -9,7 +9,7 @@ interface IEvent {
   created_at: Date;
 }
 /*
-interface IUpdateEvent {
+export interface IUpdateEvent {
   event_name?: string;
   expected_guests?: number;
   event_poster?: string;
@@ -19,7 +19,7 @@ interface IUpdateEvent {
   drinks?: string[];
 }*/
 
-interface IUpdateEvent {
+export interface IUpdateEvent {
   event_name?: string;
   expected_guests?: number;
   event_poster_url?: string | null;
@@ -35,7 +35,8 @@ interface IUpdateEvent {
   rejection_reason?: string | null;
   event_date?: Date;
 }
-interface IManagedEventUpdate {
+
+export interface IManagedEventUpdate {
   status?:
     | "approved"
     | "rejected"
@@ -47,7 +48,7 @@ interface IManagedEventUpdate {
   rejection_reason?: string | null;
 }
 
-interface ICreateEvent {
+export interface ICreateEvent {
   event_name: string;
   expected_guests: number;
   event_date: string;
@@ -57,7 +58,7 @@ interface ICreateEvent {
   }[];
 }
 
-interface IFilterEvents {
+export interface IFilterEvents {
   page?: number;
   limit?: number;
   search?: string;
