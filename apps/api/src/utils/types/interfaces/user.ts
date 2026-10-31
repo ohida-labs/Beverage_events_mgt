@@ -31,10 +31,10 @@ export interface IUpdateUser {
 }
 
 export interface IFilterUser {
-  page?: number;
-  limit?: number;
-  search?: string;
+  page?: number | 0;
+  limit?: number | 20;
+  search?: string | "";
   sortBy?: "first_name" | "last_name" | "email" | "created_at" | null;
   sortOrder?: "asc" | "desc" | null;
-  role?: "default" | "super_admin" | "admin" | null;
+  role?: "consumer" | "distribution_staff" | "admin" | "booking_manager" | null;
 }

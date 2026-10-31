@@ -58,8 +58,8 @@ export default function EventsPage({ loaderData }: Route.ComponentProps) {
   const isManager = role === "admin" || role === "booking_manager";
 
   return (
-    <main className="space-y-6">
-      <div>
+    <main className="space-y-6 card mx-auto max-w-4xl">
+      <div className="border-b-2 p-4">
         <h1 className="text-2xl font-semibold">
           {isManager ? "All Events" : "My Events"}
         </h1>
@@ -90,36 +90,57 @@ export default function EventsPage({ loaderData }: Route.ComponentProps) {
           )}
         </section>
       ) : (
-        <div className="space-y-4">
-          {events.map((event) => (
-            <article
-              key={event.event_id}
-              className="card flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
-            >
-              <div className="space-y-1">
-                <h2 className="font-semibold">
-                  <Link to={event.event_id}>{event.event_name}</Link>
-                </h2>
+        <table className="w-full text-left text-sm">
+          <thead className="bg-gray-50 text-gray-500">
+            <tr>
+              <th className="px-5 py-3 font-medium">Event</th>
+              <th className="px-5 py-3 font-medium">Guests</th>
+              <th className="px-5 py-3 font-medium">Status</th>
+              <th className="px-5 py-3 font-medium">Event Date</th>
+              <th className="px-5 py-3 font-medium">Actions</th>
+            </tr>
+          </thead>
 
-                <p className="text-sm text-gray-500">
-                  {new Date(event.event_date).toLocaleDateString("en-NG", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })}
-                </p>
+          <tbody className="divide-y divide-gray-100">
+            {events.map((event) => (
+              <tr key={event.event_id}>
+                <td className="px-5 py-4 md:w-45 ">
+                  <h2 className="font-semibold ">
+                    <Link to={event.event_id}>{event.event_name}</Link>
+                  </h2>
+                </td>
 
-                <p className="text-sm text-gray-500">
-                  {event.expected_guests} expected guests
-                </p>
-              </div>
+                <td className="px-5 py-4">
+                  <p className="text-sm font-medium text-gray-500">
+                    {event.expected_guests}
+                  </p>
+                </td>
 
-              <span className="w-fit rounded-full bg-gray-100 px-3 py-1 text-sm capitalize text-gray-700">
-                {event.status.replaceAll("_", " ")}
-              </span>
-            </article>
-          ))}
-        </div>
+                <td className="px-5 py-4">
+                  <p className="text-sm text-gray-500">{event.status}</p>
+                </td>
+
+                <td className="whitespace-nowrap px-5 py-4 text-gray-500">
+                  <p className="text-sm text-gray-500">
+                    {new Date(event.event_date).toLocaleDateString("en-NG", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </p>
+                </td>
+                <td className="px-5 py-4">
+                  <Link
+                    to={`/events/${event.event_id}`}
+                    className="font-medium text-secondary hover:text-secondary90"
+                  >
+                    View
+                  </Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
     </main>
   );

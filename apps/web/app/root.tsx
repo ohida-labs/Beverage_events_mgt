@@ -7,7 +7,6 @@ import {
   ScrollRestoration,
 } from "react-router";
 import type { Route } from "./+types/root";
-import NavigationBar from "./components/Navbar";
 import { AuthUserContext } from "./context";
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -31,6 +30,20 @@ export const links: Route.LinksFunction = () => [
     href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
   },
 ];
+
+const loggingMiddleware: Route.MiddlewareFunction = async function (
+  { request },
+  next,
+) {
+  console.log(`Request: ${request.method} ${request.url}`);
+  const response = await next();
+  console.log(`Response: ${response.status} ${request.method} ${request.url}`);
+  return response;
+};
+
+// eslint-disable-next-line react-refresh/only-export-components
+export const middleware: Route.MiddlewareFunction[] = [loggingMiddleware];
+
 /* eslint-disable react-refresh/only-export-components */
 export async function loader({ context }: Route.LoaderArgs) {
   const user = context.get(AuthUserContext);
@@ -48,7 +61,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body className="space-y-8">
-        <NavigationBar />
+        {/*<NavigationBar />*/}
         {children}
         <ScrollRestoration />
         <Scripts />

@@ -28,6 +28,7 @@ export type EventOrder = {
   event_name: string;
   event_date: string;
   expected_guests: number;
+  handled_by: string;
   status:
     | "pending"
     | "approved"
@@ -54,6 +55,7 @@ type EventApiResponse = {
 export async function loader({ request, params }: Route.LoaderArgs) {
   const cookieHeader = request.headers.get("Cookie");
   const cookie = (await user_cookie_token.parse(cookieHeader)) || {};
+  //const formData = await request.formData();
 
   if (!cookie.token) {
     throw new Response("Unauthorized", { status: 401 });
@@ -61,6 +63,9 @@ export async function loader({ request, params }: Route.LoaderArgs) {
 
   // Use the parameter name defined by your actual route.
   const eventId = params.event_id;
+  //  const customerId = String(formData.get("user_id") || "");
+
+  //console.log(customerId);
 
   if (!eventId) {
     throw new Response("Event ID is missing", { status: 400 });

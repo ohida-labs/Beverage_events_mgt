@@ -40,8 +40,9 @@ export default function EditProfile({
           <input
             id="last_name"
             name="last_name"
-            defaultValue={lastName}
-            required
+            placeholder="Enter your last name"
+            defaultValue={lastName || ""}
+
             className="w-full"
             autoComplete="family-name"
           />
@@ -53,13 +54,19 @@ export default function EditProfile({
             id="phone_number"
             name="phone_number"
             type="tel"
-            defaultValue={phoneNumber}
+            placeholder="Enter a valid calling number"
+            defaultValue={phoneNumber || ""}
             className="w-full"
             autoComplete="tel"
           />
         </div>
 
-        <button type="submit">Save changes</button>
+        <button
+          type="submit"
+          className="submit_button cursor-pointer bg-primary/90 text-white font-medium rounded-none"
+        >
+          Save changes
+        </button>
       </Form>
     </section>
   );

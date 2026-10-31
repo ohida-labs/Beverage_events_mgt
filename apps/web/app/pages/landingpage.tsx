@@ -28,7 +28,7 @@ export default function Landingpage({ loaderData }: Route.ComponentProps) {
     <div>
       {loaderData ? (
         <main>
-          <p> {loaderData}</p>
+          <p> {/*loaderData*/}</p>
           <SignOutButton />
         </main>
       ) : (

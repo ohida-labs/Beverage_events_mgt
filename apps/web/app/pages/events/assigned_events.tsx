@@ -103,13 +103,17 @@ export default function DistributionEventsPage({
   const { events } = loaderData;
   const fetcher = useFetcher<typeof action>();
   const isUpdating = fetcher.state !== "idle";
+
   return (
-    <main className="space-y-6">
-      <header>
-        <h1 className="text-2xl font-semibold">My Assigned Events</h1>
-        <p className="text-sm text-gray-500">
-          View your assigned events and track fulfilment.
-        </p>
+    <main className="max-w-3xl mx-auto space-y-6">
+      <header className="flex flex-wrap gap-y-4 justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold">My Assigned Events</h1>
+          <p className="text-sm text-gray-500">
+            View your assigned events and track fulfilment.
+          </p>
+        </div>
+        <button>Filter</button>
       </header>
 
       {events.length === 0 ? (
@@ -122,33 +126,40 @@ export default function DistributionEventsPage({
       ) : (
         <div className="space-y-4">
           {events.map((event) => (
-            <article key={event.event_id} className="card space-y-3">
+            <article key={event.event_id} className="card mx-auto space-y-3">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <h2 className="font-semibold">{event.event_name}</h2>
+                <h2 className="font-semibold capitalize">{event.event_name}</h2>
 
-                <span className="w-fit rounded-full bg-gray-100 px-3 py-1 text-sm capitalize text-gray-700">
+                <span className="w-fit rounded-full bg-secondary/10 px-3 py-1 text-sm capitalize text-secondary">
                   {event.status.replaceAll("_", " ")}
                 </span>
               </div>
 
               <div className="space-y-1 text-sm text-gray-500">
                 <p>
-                  Date:{" "}
-                  {new Date(event.event_date).toLocaleDateString("en-NG", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })}
+                  <span>Date of Event: </span>
+                  <span className="font-medium">
+                    {new Date(event.event_date).toLocaleDateString("en-NG", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </span>
                 </p>
-                <p>{event.expected_guests} expected guests</p>
+                <p>
+                  <span>{event.expected_guests.toLocaleString()}</span> expected
+                  guests
+                </p>
               </div>
 
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap items-center gap-3">
                 <a
                   href={`/events/${event.event_id}`}
-                  className="submit_button inline-block"
+                  className="
+                bg-primary/50 block h-auto border-2 py-2 px-3
+                text-primary"
                 >
-                  View event details
+                  View more
                 </a>
 
                 {event.status === "assigned" && (
@@ -161,7 +172,7 @@ export default function DistributionEventsPage({
                     <input type="hidden" name="status" value="in_progress" />
                     <button
                       type="submit"
-                      className="submit_button"
+                      className="submit_button cursor-pointer py-2 px-3 font-bold rounded-none"
                       disabled={isUpdating}
                     >
                       {isUpdating ? "Updating..." : "Start fulfilment"}
@@ -179,7 +190,7 @@ export default function DistributionEventsPage({
                     <input type="hidden" name="status" value="completed" />
                     <button
                       type="submit"
-                      className="submit_button"
+                      className="submit_button cursor-pointer py-2 px-3 font-bold bg-secondary rounded-none"
                       disabled={isUpdating}
                     >
                       {isUpdating ? "Updating..." : "Mark as completed"}

@@ -143,13 +143,13 @@ export default function UserDetails() {
       </div>
 
       {fetcher.data && "error" in fetcher.data && (
-        <p className="text-sm text-red-600" role="alert">
+        <p className="text-sm text-danger" role="alert">
           {fetcher.data.error}
         </p>
       )}
 
       {fetcher.data && "success" in fetcher.data && (
-        <p className="text-sm text-green-700" role="status">
+        <p className="text-sm text-success" role="status">
           {fetcher.data.success}
         </p>
       )}
@@ -218,7 +218,7 @@ export default function UserDetails() {
           <button
             type="submit"
             disabled={fetcher.state !== "idle"}
-            className="rounded-lg bg-green-700 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+            className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
           >
             Save role
           </button>
@@ -235,7 +235,7 @@ export default function UserDetails() {
             <button
               type="submit"
               disabled={fetcher.state !== "idle"}
-              className="rounded-lg border border-green-200 px-4 py-2 text-sm text-green-700 disabled:opacity-50"
+              className="rounded-lg border border-green-200 px-4 py-2 text-sm text-success disabled:opacity-50"
             >
               Remove blacklist
             </button>

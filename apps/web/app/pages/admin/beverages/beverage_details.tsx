@@ -148,19 +148,19 @@ export default function BeverageDetails() {
 
       <div>
         <h1 className="text-2xl font-semibold">{beverage.name}</h1>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm text-muted">
           View and edit beverage details.
         </p>
       </div>
 
       {fetcher.data && "error" in fetcher.data && (
-        <p className="text-sm text-red-600" role="alert">
+        <p className="text-sm text-danger" role="alert">
           {fetcher.data.error}
         </p>
       )}
 
       {fetcher.data && "success" in fetcher.data && (
-        <p className="text-sm text-green-700" role="status">
+        <p className="text-sm text-success" role="status">
           {fetcher.data.success}
         </p>
       )}
@@ -259,7 +259,7 @@ export default function BeverageDetails() {
           <button
             type="submit"
             disabled={fetcher.state !== "idle"}
-            className="rounded-lg bg-green-700 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+            className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
           >
             {fetcher.state !== "idle" ? "Saving..." : "Save changes"}
           </button>

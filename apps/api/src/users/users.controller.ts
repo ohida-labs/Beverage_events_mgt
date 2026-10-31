@@ -64,6 +64,38 @@ export const getUserController = asyncHandler(
 );
 */
 
+export const GetDashboardStatController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const userId = req.userId;
+    // const targetUserId = req.query.user_id as string | undefined;
+    /*
+    const user = await GetUserDetails(userId);
+    if (user.role === "admin") {
+      //return p;latform stats
+      const admin_stat = await GetAdminStat(userId);
+      res.json({
+        status: false,
+        data: { stat: admin_stat },
+      });
+    }
+    if (user.role === "consumer") {
+      //return p;latform stats
+      const user_stat = await GetUserStat(userId);
+      res.json({
+        status: false,
+        data: { stat: user_stat },
+      });
+    }
+*/
+    res.json({
+      status: false,
+      data: null,
+    });
+
+    return;
+  },
+);
+
 export const getUserController = asyncHandler(
   async (req: Request, res: Response) => {
     const userId = req.userId;
@@ -107,6 +139,9 @@ export const getUserController = asyncHandler(
           user_id: currentUser.user_id,
           email: currentUser.email,
           first_name: currentUser.first_name,
+          last_name: currentUser.last_name,
+          is_active: currentUser.is_active,
+          country: currentUser.country,
           role: currentUser.role,
           blacklist: currentUser.blacklisted,
           blacklist_reason: currentUser.blacklisted_reason,

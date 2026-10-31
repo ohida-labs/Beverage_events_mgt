@@ -19,6 +19,8 @@
   --primary: hsl(54 100% 12%);
   --secondary: hsl(241 33% 37%);
 
+  --input: hsl(54, 12%, 90%);
+
   --highlight: hsl(54 100% 94%);
   --shadow-bg:
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
@@ -29,8 +31,7 @@
   --warning: hsl(52 23% 34%);
   --success: hsl(147 19% 36%);
   --info: hsl(217 22% 41%);
-  --input: (54 100% 100%);
-  --muted: hsl(53 32% 23%);
+  --muted: hsl(60, 2%, 35%);
 
   /* font family */
   --sans: system-ui, "Segoe UI", Roboto, sans-serif;
@@ -108,13 +109,17 @@
 
   /*Error Display COLOR*/
   --color-danger: var(--danger-red);
+  --color-info: var(--info);
+
+  /*Success Green*/
+  --color-success: var(--success);
 
   /* SHADOW */
   --shadow-*: initial;
   --shadow-default: var(--shadow-bg) /* Fonts */;
 
-  /*Default animation*/
-  --animate-fade-in-scale: fade-in-scale 0.3s ease-out;
+  --color-input: var(--input) /*Default animation*/
+    --animate-fade-in-scale: fade-in-scale 0.3s ease-out;
 
   @keyframes fade-in-scale {
     0% {
@@ -160,8 +165,11 @@
 @layer components {
   /*Submission button*/
   .submit_button {
-    color: var(--text);
-    background-color: var(--secondary);
+    color: white;
+    background-color: var(--primary);
+    border-radius: 1rem;
+    border: 1.8px solid var(--border);
+    box-shadow: var(--drop-shadow-xs);
   }
 
   /*Color and spaing*/

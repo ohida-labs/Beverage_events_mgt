@@ -4,14 +4,18 @@ import EditProfile from "../../components/EditProfile";
 import SupportInformation from "../../components/SuportInformation";
 import { user_cookie_token } from "../../cookies.server";
 import type { Route } from "./+types/settings_page";
-import { data, useActionData, useLoaderData } from "react-router";
+import {
+  data,
+  useActionData,
+  useLoaderData,
+  useNavigation,
+} from "react-router";
+
 async function getToken(request: Request) {
   const cookie = await user_cookie_token.parse(request.headers.get("Cookie"));
-
   if (!cookie?.token) {
     throw new Response("Unauthorized", { status: 401 });
   }
-
   return cookie.token as string;
 }
 
@@ -30,6 +34,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   }
 
   const result = await response.json();
+
   return { user: result.data.user };
 }
 
@@ -48,7 +53,9 @@ export async function action({ request }: Route.ActionArgs) {
       phone_number: String(form.get("phone_number") || "").trim(),
     };
 
-    if (!updates.first_name || !updates.last_name) {
+    //Only first name is required
+    // if (!updates.first_name || !updates.last_name) {
+    if (!updates.first_name) {
       return data(
         { error: "First and last names are required.", success: undefined },
         {
@@ -57,6 +64,47 @@ export async function action({ request }: Route.ActionArgs) {
       );
     }
 
+    //Check if Last_name is valid
+    if (
+      updates.last_name &&
+      (!isNaN(+updates.last_name) || updates.last_name.length <= 2)
+    ) {
+      return data(
+        { error: "Invalid Name Value.", success: undefined },
+        {
+          status: 400,
+        },
+      );
+    }
+
+    //Check if phonenumber is valid
+    if (updates.phone_number) {
+      if (
+        updates.phone_number.startsWith("+234") &&
+        updates.phone_number.length !== 14
+      ) {
+        return data(
+          { error: "Invalid phone number 1", success: undefined },
+          {
+            status: 400,
+          },
+        );
+      }
+
+      if (
+        updates.phone_number.startsWith("0") &&
+        updates.phone_number.length !== 11
+      ) {
+        return data(
+          { error: "Invalid phone number 2", success: undefined },
+          {
+            status: 400,
+          },
+        );
+      }
+    }
+
+    console.log(updates);
     response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/user`, {
       method: "PATCH",
       headers: {
@@ -140,8 +188,13 @@ export default function SettingsPage() {
   const { user } = useLoaderData<typeof loader>();
   const result = useActionData<typeof action>();
 
+  //spinner
+  const navigation = useNavigation();
+  const isSubmitting = navigation.formAction;
   return (
     <main className="mx-auto max-w-3xl space-y-6">
+      {isSubmitting === "/settings" && "updating..."}
+
       {result?.error && (
         <p role="alert" className="text-sm text-red-600">
           {result.error}

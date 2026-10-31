@@ -1,29 +1,26 @@
 import { redirect } from "react-router";
 import { AuthUserContext } from "../context";
 import { user_cookie_token } from "../cookies.server";
-import type { Route } from "../pages/events/+types/all_events";
+import type { Route } from "../+types/root";
 
-export const DefaultUserMiddleware: Route.MiddlewareFunction = async function (
+export const OptionalAuthMiddleware: Route.MiddlewareFunction = async function (
   { request, context },
   next,
 ) {
-  //Get Token
   const cookieHeader = request.headers.get("Cookie");
   const cookie = (await user_cookie_token.parse(cookieHeader)) || {};
   const token = cookie?.token;
 
-  //Not available: Go to Login
   if (!token) {
-    throw redirect("/login");
+    context.set(AuthUserContext, null);
+    return next();
   }
 
-  //Change token to user info
   const response = await fetch(
     `${import.meta.env.VITE_BACKEND_URL}/auth/authorized`,
     {
       method: "GET",
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     },
@@ -31,18 +28,25 @@ export const DefaultUserMiddleware: Route.MiddlewareFunction = async function (
 
   const res = await response.json();
 
-  //Invalid Token
-  if (!res.status) {
-    throw redirect(`/login?reason=${res?.error?.message.trim()}`);
+  if (!response.ok || !res.status) {
+    context.set(AuthUserContext, null);
+    return next();
   }
 
-  if (res.data.role === "distributor") {
-    return redirect(`/assigned_events`);
-  }
-
-  //Save the user context
   context.set(AuthUserContext, res.data);
 
-  //Check paths
+  return next();
+};
+
+export const RequireAuthMiddleware: Route.MiddlewareFunction = async function (
+  { context },
+  next,
+) {
+  const user = context.get(AuthUserContext);
+
+  if (!user) {
+    throw redirect("/login");
+  }
+
   return next();
 };

@@ -197,7 +197,7 @@ export default function AllBeverages() {
             <button
               type="submit"
               disabled={fetcher.state !== "idle"}
-              className="rounded-lg bg-green-700 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+              className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
             >
               {fetcher.state !== "idle" ? "Adding..." : "Add beverage"}
             </button>
@@ -247,7 +247,7 @@ export default function AllBeverages() {
 
           <button
             type="submit"
-            className="rounded-lg bg-green-700 px-4 py-2 text-sm font-medium text-white"
+            className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white"
           >
             Apply filters
           </button>
@@ -313,7 +313,7 @@ export default function AllBeverages() {
                     <td className="px-5 py-4">
                       <Link
                         to={`/admin/beverages/${beverage.drink_id}`}
-                        className="font-medium text-green-700 hover:text-green-800"
+                        className="font-medium text-secondary hover:bg-secondary90"
                       >
                         View
                       </Link>

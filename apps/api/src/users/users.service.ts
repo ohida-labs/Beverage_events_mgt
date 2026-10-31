@@ -142,6 +142,40 @@ export const GetAllUsers = async (id: string, filter: IFilterUser) => {
 export const GetAllUsers = async (id: string, filter: IFilterUser) => {
   const user = await GetUser(id);
 
+  if (!user || (user.role !== "admin" && user.role !== "booking_manager")) {
+    throw new AuthError("Only administrators can view all users.");
+  }
+
+  //Booking manager can only get access to 'distribution_staff'
+  if (
+    user.role === "booking_manager" &&
+    filter.role &&
+    filter.role !== "distribution_staff"
+  ) {
+    throw new AuthError("Booking Manager can only view disttribution staffs.");
+  }
+
+  const allusers = await GetAllUsersDb(filter);
+
+  return {
+    users: allusers.map((user) => ({
+      user_id: user.user_id,
+      email: user.email,
+      blacklist: user.blacklisted,
+      profile: user.profile_image_url,
+      first_name: user.first_name,
+      blacklist_reason: user.blacklisted_reason,
+      phone_number: user.phone_number,
+      role: user.role,
+      created: user.created_at,
+    })),
+  };
+};
+
+//Statistics
+export const GetUserStat = async (id: string, filter: IFilterUser) => {
+  const user = await GetUser(id);
+
   if (!user || user.role !== "admin") {
     throw new AuthError("Only administrators can view all users.");
   }
@@ -160,5 +194,16 @@ export const GetAllUsers = async (id: string, filter: IFilterUser) => {
       role: user.role,
       created: user.created_at,
     })),
+  };
+};
+
+export const GetAdminStat = async (id: string) => {
+  //  const stat = await GetGeneralStat(id, "admin");
+
+  return {
+    //   total_events : stat.total_events,
+    // pending_events: stat.pending_events,
+    // completed_events: stat.completed_events,
+    // total_users: stat.total_users,
   };
 };

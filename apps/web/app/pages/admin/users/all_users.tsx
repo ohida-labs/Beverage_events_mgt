@@ -41,8 +41,21 @@ export async function loader({ request }: Route.LoaderArgs) {
 
   const search = url.searchParams.get("search") || "";
 
+  //Role
+  const role = url.searchParams.get("role") || "";
+
+  const new_query = new URLSearchParams({
+    page: String(page),
+    limit: String(limit),
+    search: encodeURIComponent(search),
+  });
+
+  if (role) {
+    new_query.set("role", role);
+  }
+
   const response = await fetch(
-    `${import.meta.env.VITE_BACKEND_URL}/user/all?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`,
+    `${import.meta.env.VITE_BACKEND_URL}/user/all?${new_query}`,
     {
       headers: {
         Authorization: `Bearer ${cookie.token}`,
@@ -158,6 +171,8 @@ export default function AdminUsers() {
   const [searchParams] = useSearchParams();
 
   const search = searchParams.get("search") || "";
+  const role = searchParams.get("role") || "";
+
   return (
     <main className="space-y-6 p-6">
       <div>
@@ -188,23 +203,37 @@ export default function AdminUsers() {
                 className="w-full max-w-md rounded-lg border border-gray-200 px-4 py-2 text-sm outline-none focus:border-green-600"
               />
 
+              <select
+                name="role"
+                defaultValue={role}
+                className="rounded-lg border border-gray-200 px-3 py-2 text-sm"
+              >
+                <option value="">All Roles</option>
+                <option value="consumer">Consumers</option>
+                <option value="distribution_staff">Distributors</option>
+                <option value="admin">Admin</option>
+                <option value="booking_manager">Booking Manager</option>
+              </select>
+
+              <input type="hidden" name="limit" value={limit} />
+
               <button
                 type="submit"
-                className="rounded-lg bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800"
+                className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:opacity-85"
               >
-                Search
+                Apply Filter
               </button>
             </Form>
 
             {/*aCTION fEEDBACK */}
             {fetcher.data && "error" in fetcher.data && (
-              <p className="text-sm text-red-600" role="alert">
+              <p className="text-sm text-danger" role="alert">
                 {fetcher.data.error}
               </p>
             )}
 
             {fetcher.data && "success" in fetcher.data && (
-              <p className="text-sm text-green-700" role="status">
+              <p className="text-sm text-success" role="status">
                 {fetcher.data.success}
               </p>
             )}
@@ -254,7 +283,7 @@ export default function AdminUsers() {
                     <td className="px-5 py-4">
                       <Link
                         to={`/admin/users/${user.user_id}`}
-                        className="font-medium text-green-700 hover:text-green-800"
+                        className="font-medium text-secondary hover:text-secondary90"
                       >
                         View
                       </Link>

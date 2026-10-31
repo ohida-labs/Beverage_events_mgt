@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { user_cookie_token } from "../../cookies.server";
 import type { Route } from "./+types/login";
-import { useFetcher, data, redirect } from "react-router";
+import { useFetcher, data, redirect, Link } from "react-router";
 
 export async function action({ request }: Route.ActionArgs) {
   const formData = await request.formData();
@@ -75,30 +75,58 @@ export default function LoginPage() {
   const response = fetcher.data;
 
   return (
-    <fetcher.Form
-      className="card mx-auto md:max-w-[75%] space-y-6"
-      method="post"
-    >
-      <p className="text-danger">{response?.error}</p>
+    <fetcher.Form className="card mx-auto md:max-w-2xl space-y-6" method="post">
+      <header>
+        <h2 className="font-semibold text-xl">Login to your Account</h2>
+        <p className="text-gray-400 text-xs">We are happy to see you again</p>
+        <p className="mt-3.5 text-xs text-danger">{response?.error}</p>
+      </header>
       <div className="space-y-2">
-        <label className="block">Email</label>
-        <input type="email" name="email" required />
+        <label className="font-medium block">Email</label>
+        <input
+          type="email"
+          name="email"
+          required
+          placeholder="janedoe@gunieness.com"
+        />
         <p className="text-danger">
           {errors?.email ? <em>{errors.email}</em> : null}
         </p>
       </div>
 
       <div className="space-y-2">
-        <label className="block">Password</label>
-        <input type="password" name="password" required />
+        <label className="font-medium block">Password</label>
+        <input
+          type="password"
+          name="password"
+          required
+          placeholder="********"
+        />
         <p className="text-danger">
           {errors?.password ? <em>{errors.password}</em> : null}
         </p>
       </div>
 
-      <button type="submit" className="submit_button">
+      <button
+        type="submit"
+        className="hover:opacity-90 w-full cursor-pointer submit_button"
+      >
         {pending ? "Submitting..." : "Log in"}
       </button>
+      <div className="text-xs text-muted w-full">
+        <p className="text-center">
+          No account yet.{" "}
+          <Link className="text-info underline" to="/register">
+            Sign up
+          </Link>{" "}
+        </p>
+        <p className="text-center">
+          Forgotten password.{" "}
+          <Link className="text-info underline" to="/forgot_password">
+            Request Otp
+          </Link>{" "}
+        </p>
+      </div>
     </fetcher.Form>
   );
 }

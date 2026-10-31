@@ -231,6 +231,7 @@ export const GetEvent = async (user_id: string, event_id: string) => {
           ON ei.event_id = e.event_id
         LEFT JOIN beverage_items b
           ON b.drink_id = ei.drink_id
+        
         WHERE e.customer_id = $1
           AND e.event_id = $2
         GROUP BY e.event_id

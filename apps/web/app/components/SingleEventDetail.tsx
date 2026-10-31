@@ -16,7 +16,8 @@ type EventOrder = {
   drinks?: Drink[];
 };
 */
-import { useFetcher } from "react-router";
+import { Link, useFetcher } from "react-router";
+import { AssignNewDistributor } from "./AssignNewDistributor";
 type Drink = {
   drink_id: string;
   name: string;
@@ -31,6 +32,7 @@ type EventOrder = {
   total?: number;
   status: string;
   event_date: string;
+  handled_by: string;
   expected_guests: number;
   rejection_reason: string | null;
   drinks: Drink[];
@@ -59,28 +61,31 @@ export default function EventPage({
 
       {isManager && (
         <div className="mt-6 space-y-4 border-t pt-5">
-          <h3 className="font-semibold">Manage event</h3>
+          <h3 className="font-semibold">Manage this event</h3>
+          <p className="text-muted text-xs">
+            Change the status of this event as an Administrative
+          </p>
 
           {event.status === "pending" && (
             <>
               <fetcher.Form method="post">
                 <input type="hidden" name="action" value="approve" />
-                <button className="submit_button w-full" type="submit">
+                <button className="bg-info text-white w-fit" type="submit">
                   Approve event
                 </button>
               </fetcher.Form>
-
-              <fetcher.Form method="post" className="space-y-2">
+              <p>Or</p>
+              <fetcher.Form method="post" className=" max-w-md space-y-2">
                 <input type="hidden" name="action" value="reject" />
                 <textarea
                   name="rejection_reason"
                   required
                   placeholder="Reason for rejection"
-                  className="w-full rounded-lg border p-3"
+                  className="w-full resize-none rounded-lg border p-3"
                 />
                 <button
                   type="submit"
-                  className="w-full rounded-lg bg-red-600 px-4 py-2 text-white"
+                  className="w-fit rounded-lg bg-danger px-4 py-2 text-white"
                 >
                   Reject event
                 </button>
@@ -88,19 +93,20 @@ export default function EventPage({
             </>
           )}
 
-          {["approved", "assigned"].includes(event.status) && (
-            <fetcher.Form method="post" className="space-y-2">
-              <input type="hidden" name="action" value="assign" />
-              <input
-                name="handled_by"
-                required
-                placeholder="Distribution staff user ID"
-                className="w-full rounded-lg border p-3"
-              />
-              <button type="submit" className="submit_button w-full">
-                Assign distribution staff
-              </button>
-            </fetcher.Form>
+          {event.status === "approved" && <AssignNewDistributor />}
+
+          {event.status === "assigned" && (
+            <div>
+              <p>
+                This event order has been assigned to a{" "}
+                <Link
+                  className="text-secondary underline"
+                  to={`/admin/users/${event.handled_by}`}
+                >
+                  distribution staff
+                </Link>
+              </p>
+            </div>
           )}
 
           {fetcher.data?.error && (

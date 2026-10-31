@@ -153,32 +153,43 @@ export const DeleteUserFromDb = async (identifier: string) => {
 
 export const GetAllUsersDb = async (filter: IFilterUser) => {
   try {
-    const page = Number(filter.page) || 0;
-    const limit = Number(filter.limit) || 20;
-    const search = String(filter.search || "").trim();
+    const { page, limit, search, role, sortBy, sortOrder } = filter;
+
     const offset = page * limit;
 
     const query = `
     SELECT
     user_id,
-        email,
-        first_name,
-        role,
-        blacklisted,
-        blacklisted_reason,
-        -- phone_number,
-       -- profile,
-       created_at
-       FROM users
-       WHERE
-       email ILIKE '%' || $1 || '%'
+    email,
+    first_name,
+    role,
+    blacklisted,
+    blacklisted_reason,
+    created_at
+FROM users
+WHERE
+    (
+        $1 = ''
+        OR email ILIKE '%' || $1 || '%'
         OR first_name ILIKE '%' || $1 || '%'
-        ORDER BY created_at DESC
-      LIMIT $2
-      OFFSET $3
+    )
+    AND (
+    $2::TEXT = ''
+    OR role = $2::user_role
+)
+ORDER BY created_at DESC
+LIMIT $3
+OFFSET $4;
       `;
 
-    const res = await pool.query(query, [search, limit, offset]);
+    const res = await pool.query(query, [
+      search,
+      role ?? "",
+      //sortBy ?? "created_at",
+      // sortOrder ?? "DESC",
+      limit || 20,
+      offset,
+    ]);
 
     return res.rows as IUser[];
   } catch (e) {

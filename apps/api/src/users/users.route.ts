@@ -3,6 +3,7 @@ import { Router } from "express";
 import {
   CreateUserController,
   DeleteAccountController,
+  GetDashboardStatController,
   getUserController,
   GetUsersController,
   UpdateUserController,
@@ -18,5 +19,7 @@ UserRouter.route("/")
   .delete(DeleteAccountController);
 
 UserRouter.route("/all").get(GetUsersController);
+
+UserRouter.route("/stat").get(GetDashboardStatController);
 
 export default UserRouter;
