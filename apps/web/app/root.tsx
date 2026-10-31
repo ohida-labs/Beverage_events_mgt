@@ -8,7 +8,6 @@ import {
 } from "react-router";
 import type { Route } from "./+types/root";
 import { AuthUserContext } from "./context";
-
 // eslint-disable-next-line react-refresh/only-export-components
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
