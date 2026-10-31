@@ -16,14 +16,13 @@ export default defineConfig({
   resolve: {
     tsconfigPaths: true,
   },
-
-  server: {
-    proxy: {
-      "/api": {
-        target: "http://localhost:8080",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, "/v0.1"),
-      },
-    },
-  },
 });
+// server: {
+// proxy: {
+//  "/api": {
+//   target: "http://localhost:8080",
+//  changeOrigin: true,
+//rewrite: (path) => path.replace(/^\/api/, "/v0.1"),
+//},
+//    },
+//  },

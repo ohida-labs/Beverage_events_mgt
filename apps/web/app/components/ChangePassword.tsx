@@ -20,6 +20,7 @@ export default function ChangeUserPassword() {
             name="old_password"
             type="password"
             autoComplete="current-password"
+            placeholder="*********"
             required
             className="w-full"
           />
@@ -33,12 +34,18 @@ export default function ChangeUserPassword() {
             type="password"
             autoComplete="new-password"
             minLength={8}
+            placeholder="*********"
             required
             className="w-full"
           />
         </div>
 
-        <button type="submit">Change password</button>
+        <button
+          type="submit"
+          className="submit_button cursor-pointer bg-primary/90 text-white font-medium rounded-none"
+        >
+          Change password
+        </button>
       </Form>
     </section>
   );
