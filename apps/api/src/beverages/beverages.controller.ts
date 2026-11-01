@@ -114,7 +114,7 @@ export const CreateBeverageController = asyncHandler(
 
     const result = await CreateBeverageService({
       name,
-      price,
+      price_minor_units: price,
       image_url,
       created_by: userId,
     });
@@ -162,7 +162,7 @@ export const UpdateBeverageController = asyncHandler(
     const result = await UpdateBeverageService(drink_id, {
       name,
       image_url,
-      price,
+      price_minor_units: price,
       is_available,
     });
 
