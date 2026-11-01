@@ -1,4 +1,9 @@
-import pool from "../../utils/database.js";
+import {
+  BeverageFilters,
+  CreateBeverageInput,
+  UpdateBeverageInput,
+} from "@/utils/types/interfaces/beverage.js";
+import pool from "../../utils/database/index.js";
 import { handlePgError } from "../../utils/exceptions/dbError.js";
 
 export const GetAvailableBeverages = async () => {

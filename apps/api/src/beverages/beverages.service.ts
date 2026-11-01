@@ -1,4 +1,9 @@
 import {
+  BeverageFilters,
+  CreateBeverageInput,
+  UpdateBeverageInput,
+} from "@/utils/types/interfaces/beverage.js";
+import {
   CreateBeverage,
   GetAllBeverages,
   GetAvailableBeverages,
@@ -8,18 +13,15 @@ import {
 
 export const GetAvailableBeveragesService = async () => {
   const beverages = await GetAvailableBeverages();
-
   return { beverages };
 };
 
 //admin only
 export const GetAllBeveragesService = async (filters: BeverageFilters) => {
   const result = await GetAllBeverages(filters);
-
   if (!result) {
     throw new Error("Failed to retrieve beverages.");
   }
-
   return {
     beverages: result.beverages,
     pagination: {
@@ -31,13 +33,6 @@ export const GetAllBeveragesService = async (filters: BeverageFilters) => {
   };
 };
 
-interface CreateBeverageInput {
-  name: string;
-  image_url?: string | null;
-  price: number;
-  created_by: string;
-}
-
 export const CreateBeverageService = async (input: CreateBeverageInput) => {
   const name = input.name.trim();
 
@@ -46,9 +41,9 @@ export const CreateBeverageService = async (input: CreateBeverageInput) => {
   }
 
   if (
-    !Number.isFinite(input.price) ||
-    input.price <= 0 ||
-    !Number.isSafeInteger(Math.round(input.price * 100))
+    !Number.isFinite(input.price_minor_units) ||
+    input.price_minor_units <= 0 ||
+    !Number.isSafeInteger(Math.round(input.price_minor_units * 100))
   ) {
     throw new Error("Enter a valid price greater than zero.");
   }
@@ -56,7 +51,7 @@ export const CreateBeverageService = async (input: CreateBeverageInput) => {
   const beverage = await CreateBeverage({
     name,
     image_url: input.image_url?.trim() || null,
-    price_minor_units: Math.round(input.price * 100),
+    price_minor_units: Math.round(input.price_minor_units * 100),
     created_by: input.created_by,
   });
 
@@ -66,15 +61,6 @@ export const CreateBeverageService = async (input: CreateBeverageInput) => {
 
   return { beverage };
 };
-
-//Update drink
-
-interface UpdateBeverageInput {
-  name?: string;
-  image_url?: string | null;
-  price?: number;
-  is_available?: boolean;
-}
 
 export const UpdateBeverageService = async (
   drinkId: string,
@@ -111,17 +97,17 @@ export const UpdateBeverageService = async (
         : null;
   }
 
-  if (input.price !== undefined) {
+  if (input.price_minor_units !== undefined) {
     if (
-      typeof input.price !== "number" ||
-      !Number.isFinite(input.price) ||
-      input.price <= 0 ||
-      !Number.isSafeInteger(Math.round(input.price * 100))
+      typeof input.price_minor_units !== "number" ||
+      !Number.isFinite(input.price_minor_units) ||
+      input.price_minor_units <= 0 ||
+      !Number.isSafeInteger(Math.round(input.price_minor_units * 100))
     ) {
       throw new Error("Enter a valid price greater than zero.");
     }
 
-    updates.price_minor_units = Math.round(input.price * 100);
+    updates.price_minor_units = Math.round(input.price_minor_units * 100);
   }
 
   if (input.is_available !== undefined) {
@@ -146,7 +132,6 @@ export const UpdateBeverageService = async (
 };
 
 //gET SINLGE bEVERAGE SERVICE
-
 export const GetBeverageByIdService = async (drinkId: string) => {
   const beverage = await GetBeverageById(drinkId);
 

@@ -1,4 +1,4 @@
-import pool from "../../utils/database.js";
+import pool from "../../utils/database/index.js";
 import { handlePgError } from "../../utils/exceptions/dbError.js";
 
 //Get token
