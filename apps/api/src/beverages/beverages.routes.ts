@@ -5,8 +5,8 @@ import {
   GetAvailableBeveragesController,
   GetBeverageByIdController,
   UpdateBeverageController,
-} from "./beverages.controller";
-import { AuthorizationClientRequest } from "@/utils/middleware/auth";
+} from "./beverages.controller.js";
+import { AuthorizationClientRequest } from "../utils/middleware/auth.js";
 
 const BeverageRoute = Router();
 

@@ -1,16 +1,16 @@
 import { Response, Request } from "express";
-import { asyncHandler } from "../utils/middleware/error";
+import { asyncHandler } from "../utils/middleware/error.js";
 import {
   CreateNewAdminUser,
   DeleteUserDetails,
   GetAllUsers,
   GetUserDetails,
   UpdateUserDetails,
-} from "./users.service";
-import { IFilterUser, IUpdateUser } from "@/utils/types/interfaces/user";
-import ValidationError from "@/utils/exceptions/validationError";
-import { UpdateUser } from "./repository/users.repository";
-import AuthError from "@/utils/exceptions/AuthError";
+} from "./users.service.js";
+import { IFilterUser, IUpdateUser } from "../utils/types/interfaces/user.js";
+import ValidationError from "../utils/exceptions/validationError.js";
+//import { UpdateUser } from "./repository/users.repository.js";
+import AuthError from "../utils/exceptions/AuthError.js";
 
 /* Users actions */
 /*

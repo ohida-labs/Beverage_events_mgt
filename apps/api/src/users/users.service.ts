@@ -1,13 +1,13 @@
 import bc from "bcrypt";
-import NotFoundError from "@/utils/exceptions/NotFound";
+import NotFoundError from "../utils/exceptions/NotFound.js";
 import {
   CreateUser,
   GetAllUsersDb,
   GetUser,
   UpdateUser,
-} from "./repository/users.repository";
-import { IFilterUser, IUpdateUser } from "@/utils/types/interfaces/user";
-import AuthError from "@/utils/exceptions/AuthError";
+} from "./repository/users.repository.js";
+import { IFilterUser, IUpdateUser } from "../utils/types/interfaces/user.js";
+import AuthError from "../utils/exceptions/AuthError.js";
 
 //General
 export const GetUserDetails = async (userId: string) => {

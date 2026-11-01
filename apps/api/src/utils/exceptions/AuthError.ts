@@ -1,4 +1,4 @@
-import BaseError from "./baseError";
+import BaseError from "./baseError.js";
 
 class AuthError extends BaseError {
   constructor(description: string, statusCode = 401) {

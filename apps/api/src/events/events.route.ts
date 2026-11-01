@@ -4,7 +4,7 @@ import {
   getAllEventsController,
   getEventController,
   UpdateEventController,
-} from "./events.controller";
+} from "./events.controller.js";
 
 const EventRoute = Router();
 

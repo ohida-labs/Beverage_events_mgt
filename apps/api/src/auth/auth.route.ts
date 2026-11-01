@@ -5,8 +5,8 @@ import {
   PasswordResetController,
   SignupController,
   UserIsAuthorizedCheck,
-} from "./auth.controller";
-import { AuthorizationClientRequest } from "@/utils/middleware/auth";
+} from "./auth.controller.js";
+import { AuthorizationClientRequest } from "../utils/middleware/auth.js";
 
 const AuthRouter = Router();
 

@@ -1,4 +1,4 @@
-import BaseError from "./baseError";
+import BaseError from "./baseError.js";
 
 class EventError extends BaseError {
   title?: string;

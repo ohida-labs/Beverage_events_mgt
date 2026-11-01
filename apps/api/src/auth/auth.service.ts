@@ -2,11 +2,11 @@ import {
   CreateUser,
   GetUser,
   UpdateUser,
-} from "@/users/repository/users.repository";
+} from "../users/repository/users.repository.js";
 import bc from "bcrypt";
 import jwt from "jsonwebtoken";
-import { getResetToken, upsertToken } from "./repository/resetToken";
-import AuthError from "@/utils/exceptions/AuthError";
+import { getResetToken, upsertToken } from "./repository/resetToken.js";
+import AuthError from "../utils/exceptions/AuthError.js";
 //LOGIN WITH PASSWORD
 interface IAuth {
   email: string;

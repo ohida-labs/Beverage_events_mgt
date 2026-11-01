@@ -1,5 +1,5 @@
-import { httpStatusCodes } from "../types/enums/httpsCodes";
-import BaseError from "./baseError";
+import { httpStatusCodes } from "../types/enums/httpsCodes.js";
+import BaseError from "./baseError.js";
 
 class ValidationError extends BaseError {
   errors: Record<string, string>;

@@ -4,7 +4,7 @@ import {
   GetAvailableBeverages,
   UpdateBeverage,
   GetBeverageById,
-} from "./repository/beverages.repository";
+} from "./repository/beverages.repository.js";
 
 export const GetAvailableBeveragesService = async () => {
   const beverages = await GetAvailableBeverages();

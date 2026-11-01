@@ -1,12 +1,12 @@
-import { DbUpdateHelper } from "@/utils/database/updateHelper";
-import pool from "../../utils/database";
-import { handlePgError } from "../../utils/exceptions/dbError";
-import ValidationError from "../../utils/exceptions/validationError";
+import { DbUpdateHelper } from "../../utils/database/updateHelper.js";
+import pool from "../../utils/database.js";
+import { handlePgError } from "../../utils/exceptions/dbError.js";
+import ValidationError from "../../utils/exceptions/validationError.js";
 import {
   IFilterUser,
   IUpdateUser,
   IUser,
-} from "../../utils/types/interfaces/user";
+} from "../../utils/types/interfaces/user.js";
 
 interface UpdateUserWithPassword extends IUpdateUser {
   password?: string;

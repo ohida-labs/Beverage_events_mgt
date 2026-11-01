@@ -1,6 +1,6 @@
 //Handle error MIDDLEWARE
 import { NextFunction, Request, Response } from "express";
-import NotFoundError from "../exceptions/NotFound";
+import NotFoundError from "../exceptions/NotFound.js";
 import winston from "winston";
 //import DiscordTransport from "winston-discord-transport";
 

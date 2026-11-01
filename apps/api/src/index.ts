@@ -12,14 +12,14 @@ import {
   errorLoggingMiddleWare,
   errorResponseHandler,
   RouteNotFoundHandler,
-} from "./utils/middleware/error";
+} from "./utils/middleware/error.js";
 
 //Routes
-import AuthRouter from "./auth/auth.route";
-import EventRoute from "./events/events.route";
-import BeverageRoute from "./beverages/beverages.routes";
-import UserRouter from "./users/users.route";
-import { AuthorizationClientRequest } from "./utils/middleware/auth";
+import AuthRouter from "./auth/auth.route.js";
+import EventRoute from "./events/events.route.js";
+import BeverageRoute from "./beverages/beverages.routes.js";
+import UserRouter from "./users/users.route.js";
+import { AuthorizationClientRequest } from "./utils/middleware/auth.js";
 
 //dotenv.config({ path: ".env.local" });
 

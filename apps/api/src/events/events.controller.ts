@@ -1,7 +1,7 @@
 import { Response, Request, NextFunction } from "express";
-import { asyncHandler } from "../utils/middleware/error";
-import ValidationError from "@/utils/exceptions/validationError";
-import { GetUserDetails } from "@/users/users.service";
+import { asyncHandler } from "../utils/middleware/error.js";
+import ValidationError from "../utils/exceptions/validationError.js";
+import { GetUserDetails } from "../users/users.service.js";
 import {
   CreateNewEventService,
   GetAllDistributionEventsService,
@@ -12,10 +12,10 @@ import {
   UpdateDistributionEventService,
   UpdateEventDetailsService,
   UpdateManagedEventService,
-} from "./events.service";
-import AuthError from "@/utils/exceptions/AuthError";
-import NotFoundError from "@/utils/exceptions/NotFound";
-import { ICreateEvent, IFilterEvents } from "@/utils/types/interfaces/event.js";
+} from "./events.service.js";
+import AuthError from "../utils/exceptions/AuthError.js";
+import NotFoundError from "../utils/exceptions/NotFound.js";
+import { ICreateEvent, IFilterEvents } from "../utils/types/interfaces/event.js.js";
 
 // /events/:eventId?user_id=addsdad =GET
 export const getEventController = asyncHandler(

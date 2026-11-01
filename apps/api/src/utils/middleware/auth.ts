@@ -3,8 +3,8 @@ This file called for every authorize request by the browser or discord bot;
 */
 import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
-import AuthError from "../exceptions/AuthError";
-import { GetUserDetails } from "@/users/users.service";
+import AuthError from "../exceptions/AuthError.js";
+import { GetUserDetails } from "../../users/users.service.js";
 
 const jwtSecret = process.env.JWT_SECRET as string;
 

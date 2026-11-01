@@ -1,14 +1,14 @@
 import type { Request, Response } from "express";
-import { asyncHandler } from "@/utils/middleware/error";
+import { asyncHandler } from "../utils/middleware/error.js";
 import {
   CreateBeverageService,
   GetAllBeveragesService,
   GetAvailableBeveragesService,
   UpdateBeverageService,
-} from "./beverages.service";
-import AuthError from "@/utils/exceptions/AuthError";
-import { GetUserDetails } from "@/users/users.service";
-import { GetBeverageByIdService } from "./beverages.service";
+} from "./beverages.service.js";
+import AuthError from "../utils/exceptions/AuthError.js";
+import { GetUserDetails } from "../users/users.service.js";
+import { GetBeverageByIdService } from "./beverages.service.js";
 
 export const GetAvailableBeveragesController = asyncHandler(
   async (_req: Request, res: Response) => {

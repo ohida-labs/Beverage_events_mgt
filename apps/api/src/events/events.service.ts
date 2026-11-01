@@ -1,4 +1,4 @@
-import NotFoundError from "@/utils/exceptions/NotFound";
+import NotFoundError from "../utils/exceptions/NotFound.js";
 import {
   CreateNewEvent,
   GetAllAssignedEvents,
@@ -8,15 +8,15 @@ import {
   UpdateDistributionEvent,
   UpdateEvent,
   UpdateManagedEvent,
-} from "./repository/events.repository";
-import { GetUser } from "@/users/repository/users.repository";
-import EventError from "@/utils/exceptions/EventError";
+} from "./repository/events.repository.js";
+import { GetUser } from "../users/repository/users.repository.js";
+import EventError from "../utils/exceptions/EventError.js";
 import {
   ICreateEvent,
   IFilterEvents,
   IManagedEventUpdate,
   IUpdateEvent,
-} from "@/utils/types/interfaces/event";
+} from "../utils/types/interfaces/event.js";
 
 //get user events
 export const GetUserEventDetailService = async (arg: {

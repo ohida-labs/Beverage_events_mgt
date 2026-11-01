@@ -4,11 +4,11 @@ import {
   LoginWithEmailAndPassword,
   PasswordResetService,
   SignupWithEmailAndPassword,
-} from "./auth.service";
-import { asyncHandler } from "../utils/middleware/error";
+} from "./auth.service.js";
+import { asyncHandler } from "../utils/middleware/error.js";
 import jwt from "jsonwebtoken";
-import AuthError from "@/utils/exceptions/AuthError";
-import ValidationError from "@/utils/exceptions/validationError";
+import AuthError from "../utils/exceptions/AuthError.js";
+import ValidationError from "../utils/exceptions/validationError.js";
 
 const jwtSecret = process.env.JWT_SECRET as string;
 /*Implement auth with lucia Auth! */

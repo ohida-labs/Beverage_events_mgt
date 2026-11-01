@@ -7,7 +7,7 @@ import {
   getUserController,
   GetUsersController,
   UpdateUserController,
-} from "./users.controller";
+} from "./users.controller.js";
 
 const UserRouter = Router();
 

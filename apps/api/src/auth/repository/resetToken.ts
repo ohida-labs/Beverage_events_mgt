@@ -1,5 +1,5 @@
-import pool from "@/utils/database";
-import { handlePgError } from "@/utils/exceptions/dbError";
+import pool from "../../utils/database.js";
+import { handlePgError } from "../../utils/exceptions/dbError.js";
 
 //Get token
 export const getResetToken = async (email: string) => {

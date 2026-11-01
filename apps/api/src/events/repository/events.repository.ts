@@ -1,14 +1,14 @@
-import pool from "@/utils/database";
-import { DbUpdateHelper } from "@/utils/database/updateHelper";
-import { handlePgError } from "@/utils/exceptions/dbError";
-import ValidationError from "@/utils/exceptions/validationError";
+import pool from "../../utils/database.js";
+import { DbUpdateHelper } from "../../utils/database/updateHelper.js";
+import { handlePgError } from "../../utils/exceptions/dbError.js";
+import ValidationError from "../../utils/exceptions/validationError.js";
 import {
   ICreateEvent,
   IManagedEventUpdate,
   IEvent,
   IFilterEvents,
   IUpdateEvent,
-} from "@/utils/types/interfaces/event";
+} from "../../utils/types/interfaces/event.js";
 
 //A
 export const CreateNewEvent = async (
