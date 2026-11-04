@@ -165,7 +165,7 @@ export default function AllBeverages() {
         </p>
       </div>
 
-      <section className="rounded-xl border border-gray-200 bg-white p-5">
+      <section className="rounded-xl border border-border bg-background p-5">
         <h2 className="font-medium">Add beverage</h2>
 
         <fetcher.Form method="post" className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -173,7 +173,7 @@ export default function AllBeverages() {
             name="name"
             required
             placeholder="Beverage name"
-            className="rounded-lg border border-gray-200 px-3 py-2 text-sm"
+            className="rounded-lg border border-border px-3 py-2 text-sm"
           />
 
           <input
@@ -183,14 +183,14 @@ export default function AllBeverages() {
             min="0.01"
             step="0.01"
             placeholder="Price in naira"
-            className="rounded-lg border border-gray-200 px-3 py-2 text-sm"
+            className="rounded-lg border border-border px-3 py-2 text-sm"
           />
 
           <input
             name="image_url"
             type="url"
             placeholder="Image URL (optional)"
-            className="rounded-lg border border-gray-200 px-3 py-2 text-sm sm:col-span-2"
+            className="rounded-lg border border-border px-3 py-2 text-sm sm:col-span-2"
           />
 
           <div className="sm:col-span-2">
@@ -217,8 +217,8 @@ export default function AllBeverages() {
         )}
       </section>
 
-      <section className="overflow-hidden rounded-xl border border-gray-200 bg-white">
-        <div className="border-b border-gray-200 px-5 py-4">
+      <section className="overflow-hidden rounded-xl border border-border bg-background">
+        <div className="border-b border-border px-5 py-4">
           <h2 className="font-medium">All beverages</h2>
           <p className="mt-1 text-sm text-gray-500">
             {total} beverages in total
@@ -230,13 +230,13 @@ export default function AllBeverages() {
             name="search"
             defaultValue={search}
             placeholder="Search beverages..."
-            className="w-full max-w-sm rounded-lg border border-gray-200 px-4 py-2 text-sm"
+            className="w-full max-w-sm rounded-lg border border-border px-4 py-2 text-sm"
           />
 
           <select
             name="availability"
             defaultValue={availability}
-            className="rounded-lg border border-gray-200 px-3 py-2 text-sm"
+            className="rounded-lg border border-border px-3 py-2 text-sm"
           >
             <option value="">All statuses</option>
             <option value="true">Available</option>
@@ -277,7 +277,7 @@ export default function AllBeverages() {
                           src={beverage.image_url}
                           alt={beverage.name}
                           loading="lazy"
-                          className="h-12 w-12 rounded-lg border border-gray-200 object-cover"
+                          className="h-12 w-12 rounded-lg border border-border object-cover"
                         />
                       ) : (
                         <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100 text-xs text-gray-400">
@@ -325,7 +325,7 @@ export default function AllBeverages() {
           </div>
         )}
 
-        <div className="flex items-center justify-between border-t border-gray-200 px-5 py-4">
+        <div className="flex items-center justify-between border-t border-border px-5 py-4">
           <span className="text-sm text-gray-500">
             Page {page + 1} of {Math.max(totalPages, 1)}
           </span>
@@ -334,7 +334,7 @@ export default function AllBeverages() {
             {page > 0 && (
               <Link
                 to={`?page=${page - 1}&limit=${limit}&search=${encodeURIComponent(search)}&availability=${availability}`}
-                className="rounded-lg border border-gray-200 px-3 py-2 text-sm hover:bg-gray-50"
+                className="rounded-lg border border-border px-3 py-2 text-sm hover:bg-gray-50"
               >
                 Previous
               </Link>
@@ -343,7 +343,7 @@ export default function AllBeverages() {
             {page + 1 < totalPages && (
               <Link
                 to={`?page=${page + 1}&limit=${limit}&search=${encodeURIComponent(search)}&availability=${availability}`}
-                className="rounded-lg border border-gray-200 px-3 py-2 text-sm hover:bg-gray-50"
+                className="rounded-lg border border-border px-3 py-2 text-sm hover:bg-gray-50"
               >
                 Next
               </Link>

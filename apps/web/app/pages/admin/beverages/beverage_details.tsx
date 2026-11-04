@@ -165,7 +165,7 @@ export default function BeverageDetails() {
         </p>
       )}
 
-      <section className="rounded-xl border border-gray-200 bg-white p-5">
+      <section className="rounded-xl border border-border bg-background p-5">
         <h2 className="font-medium">Beverage details</h2>
 
         <div className="mt-4">
@@ -173,7 +173,7 @@ export default function BeverageDetails() {
             <img
               src={beverage.image_url}
               alt={beverage.name}
-              className="h-40 w-40 rounded-xl border border-gray-200 object-cover"
+              className="h-40 w-40 rounded-xl border border-border object-cover"
             />
           ) : (
             <div className="flex h-40 w-40 items-center justify-center rounded-xl bg-gray-100 text-sm text-gray-400">
@@ -195,7 +195,7 @@ export default function BeverageDetails() {
               name="name"
               required
               defaultValue={beverage.name}
-              className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
+              className="w-full rounded-lg border border-border px-3 py-2 text-sm"
             />
           </div>
 
@@ -214,7 +214,7 @@ export default function BeverageDetails() {
               step="0.01"
               required
               defaultValue={beverage.price_minor_units / 100}
-              className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
+              className="w-full rounded-lg border border-border px-3 py-2 text-sm"
             />
           </div>
 
@@ -231,7 +231,7 @@ export default function BeverageDetails() {
               type="url"
               defaultValue={beverage.image_url || ""}
               placeholder="https://example.com/beverage.jpg"
-              className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
+              className="w-full rounded-lg border border-border px-3 py-2 text-sm"
             />
             <p className="mt-1 text-xs text-gray-500">
               Leave empty to remove the current image.
@@ -249,7 +249,7 @@ export default function BeverageDetails() {
               id="is_available"
               name="is_available"
               defaultValue={String(beverage.is_available)}
-              className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
+              className="w-full rounded-lg border border-border px-3 py-2 text-sm"
             >
               <option value="true">Available</option>
               <option value="false">Unavailable</option>
@@ -266,7 +266,7 @@ export default function BeverageDetails() {
         </fetcher.Form>
       </section>
 
-      <section className="rounded-xl border border-gray-200 bg-white p-5">
+      <section className="rounded-xl border border-border bg-background p-5">
         <h2 className="font-medium">Record information</h2>
         <dl className="mt-4 space-y-3 text-sm">
           <div>

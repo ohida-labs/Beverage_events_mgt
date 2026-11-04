@@ -9,7 +9,7 @@ const adminActions = [
   {
     title: "Manage Events",
     description: "View and track events across the platform.",
-    href: "/dashboard/events",
+    href: "/events",
   },
   {
     title: "Manage Users",

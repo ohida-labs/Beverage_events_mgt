@@ -18,10 +18,6 @@ export const links: Route.LinksFunction = () => [
     crossOrigin: "anonymous",
   },
   {
-    rel: "stylesheet",
-    href: "/app/index.css",
-  },
-  {
     rel: "icon",
     href: "/favicon.ico",
   },

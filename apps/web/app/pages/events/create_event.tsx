@@ -115,7 +115,7 @@ export async function action({ request }: Route.ActionArgs) {
     );
   }
 
-  return redirect("/dashboard/events"); // Replace with your actual event listing/details route.
+  return redirect("/events"); // Replace with your actual event listing/details route.
 }
 
 export default function CreateNewEventOrderPage({

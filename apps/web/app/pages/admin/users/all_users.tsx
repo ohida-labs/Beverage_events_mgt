@@ -182,8 +182,8 @@ export default function AdminUsers() {
         </p>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
-        <div className="border-b border-gray-200 px-5 py-4">
+      <div className="overflow-hidden rounded-xl border bg-background">
+        <div className="border-b px-5 py-4">
           <h2 className="font-medium">All users</h2>
           <p className="mt-1 text-sm text-gray-500">
             {users.length} users on this page
@@ -200,7 +200,7 @@ export default function AdminUsers() {
                 name="search"
                 defaultValue={search}
                 placeholder="Search by name or email..."
-                className="w-full max-w-md rounded-lg border border-gray-200 px-4 py-2 text-sm outline-none focus:border-green-600"
+                className="w-full max-w-md rounded-lg border border-border px-4 py-2 text-sm outline-none focus:border-green-600"
               />
 
               <select

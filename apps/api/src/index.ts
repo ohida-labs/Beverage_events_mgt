@@ -1,5 +1,3 @@
-//import type { ApiResponse, User } from "@repo/shared";
-
 //Extenal Package
 import express from "express";
 import cors from "cors";
@@ -22,13 +20,12 @@ import UserRouter from "./users/users.route.js";
 import { AuthorizationClientRequest } from "./utils/middleware/auth.js";
 
 //dotenv.config({ path: ".env.local" });
-
 dotenv.config({
   path: path.resolve("apps/api/.env.local"),
 });
 
 const app = express();
-const PORT = 8080;
+//const PORT = 8080;
 
 app.use(cookieParser());
 app.use(cors());
@@ -60,6 +57,10 @@ app.use(errorResponseHandler);
 //Log SomeEles
 app.use(errorLoggingMiddleWare);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+const PORT = 8080;
+
+if (process.env.NODE_ENV !== "production") {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}

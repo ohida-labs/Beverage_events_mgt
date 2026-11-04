@@ -86,6 +86,7 @@ import { AuthUserContext } from "../../context";
 /*{
   loaderData,
 }: Route.ComponentProps */
+import { useNavigate } from "react-router";
 export default function DashboardHomeView() {
   //const { user, active_event, draft_events }  = loaderData;
   //const { active_event, draft_events } = loaderData;
@@ -95,7 +96,8 @@ export default function DashboardHomeView() {
     return <p> An error Occured!</p>;
   }
 */
-
+  const navigate = useNavigate();
+  const create_order = () => navigate("/events/new");
   return (
     <main className="md:max-w-160 shadow space-y-6  p-4 md:mx-auto">
       <div className="card space-y-6 rounded w-full flex flex-col">
@@ -105,7 +107,10 @@ export default function DashboardHomeView() {
             Welcome to Guiness. Make order of drinks for your event
           </p>
         </div>
-        <button className="submit_button md:w-fit  w-full justify-center transition px-3 py-4 md:py-1 rounded-full text-[0.85rem]">
+        <button
+          onClick={create_order}
+          className="submit_button hover:cursor-pointer  md:w-fit  w-full justify-center transition px-3 py-4 md:py-1 rounded-full text-[0.85rem]"
+        >
           Place an Order
         </button>
       </div>

@@ -42,7 +42,7 @@ export async function action({ request }: Route.ActionArgs) {
   }
 
   //Send credentials to backend server;
-  const response = await fetch("http://localhost:8080/v0.1/auth/signup", {
+  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/signup`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -68,7 +68,8 @@ export async function action({ request }: Route.ActionArgs) {
   const cookie = (await user_cookie_token.parse(cookieHeader)) || {};
   cookie.token = res?.data?.token;
 
-  return redirect("/", {
+  //For Distributor change to /assign_events
+  return redirect("/events", {
     headers: {
       "Set-Cookie": await user_cookie_token.serialize(cookie),
     },

@@ -46,7 +46,7 @@ export const getEventController = asyncHandler(
 
     //For an administrator;
     if (
-      userData.role !== "consumer" &&
+      (userData.role === "admin" || userData.role === "booking_manager") &&
       user_id &&
       userData.user_id !== user_id
     ) {

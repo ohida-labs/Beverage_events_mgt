@@ -27,6 +27,7 @@ export default function EditProfile({
           <label htmlFor="first_name">First name</label>
           <input
             id="first_name"
+            placeholder="Enter your first name"
             name="first_name"
             defaultValue={firstName}
             required

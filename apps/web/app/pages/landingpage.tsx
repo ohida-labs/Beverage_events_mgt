@@ -1,16 +1,15 @@
 /* eslint-disable react-refresh/only-export-components */
-import type { Route } from "../+types/root";
-import SignOutButton from "../components/SignOut";
-import { user_cookie_token } from "../cookies.server";
-import { redirect } from "react-router";
+//import type { Route } from "../+types/root";
+//import SignOutButton from "../components/SignOut";
 
 //Load all beverages HERE!
-export async function loader({ request }: Route.LoaderArgs) {
+/*export async function loader({ request }: Route.LoaderArgs) {
   const cookieHeader = request.headers.get("Cookie");
   const cookie = (await user_cookie_token.parse(cookieHeader)) || {};
   return cookie?.token;
 }
-
+ */
+/*
 export async function action() {
   return redirect("/", {
     headers: {
@@ -23,19 +22,11 @@ export async function action() {
     },
   });
 }
-export default function Landingpage({ loaderData }: Route.ComponentProps) {
+  */
+export default function Landingpage() {
   return (
-    <div>
-      {loaderData ? (
-        <main>
-          <p> {/*loaderData*/}</p>
-          <SignOutButton />
-        </main>
-      ) : (
-        <p>Not authenticated yet!</p>
-      )}
-
+    <main>
       <p>This is guiness booking consumer platform!</p>
-    </div>
+    </main>
   );
 }

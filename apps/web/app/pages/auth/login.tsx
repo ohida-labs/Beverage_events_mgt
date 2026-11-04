@@ -55,7 +55,17 @@ export async function action({ request }: Route.ActionArgs) {
   const cookie = (await user_cookie_token.parse(cookieHeader)) || {};
   cookie.token = res?.data?.token;
 
-  return redirect("/", {
+  const role = res.data?.user?.role;
+
+  if (role === "distribution_staff") {
+    return redirect("/assigned_events", {
+      headers: {
+        "Set-Cookie": await user_cookie_token.serialize(cookie),
+      },
+    });
+  }
+
+  return redirect("/events", {
     headers: {
       "Set-Cookie": await user_cookie_token.serialize(cookie),
     },
